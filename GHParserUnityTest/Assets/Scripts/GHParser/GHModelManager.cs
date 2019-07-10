@@ -307,7 +307,15 @@ public class GHModelManager : Singleton<GHModelManager>
                 Debug.Log(lines[i] + "->" + lines[i + 1]);
             }*/
         }
-
+        
+        StartCoroutine(SetGroupOutlines(lines, 1f)); //in case the following line throws an NPE
+        //(happens when the VR setup did not have enough time to be initialized)
+        LineDrawer.Instance.Lines = lines;
+    }
+    
+    IEnumerator SetGroupOutlines(List<Vector3> lines, float delayTime)
+    {
+        yield return new WaitForSeconds(delayTime);
         LineDrawer.Instance.Lines = lines;
     }
 
