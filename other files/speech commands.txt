@@ -1,0 +1,15 @@
+Suggestion for the general commands that are expected: 
+"Add component *"
+"Add * Component"
+"Add slider with value 8.7"
+
+(Number)Slider with value (int, float, number of decimals)
+Boolean/Toggle/BooleanToggle with value true/false
+Panel (with text)
+
+Construct Point
+Circle
+Radians/Degrees To Radians
+Scale
+VectorXYZ
+YZPlane
