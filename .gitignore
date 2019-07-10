@@ -38,3 +38,5 @@ sysinfo.txt
 *.unitypackage
 *.iml
 GHParserUnityTest/.idea/
+*.psd
+GHParserUnityTest/Assets/SteamVR/InteractionSystem/Longbow/Sounds/
