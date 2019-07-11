@@ -3377,7 +3377,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   BaseTemplateFile: /GH files/base.ghx
-  ComponentPrefab: {fileID: 1396164408517860, guid: 91595d14fb741ba45b0e7d404aadec45,
+  ComponentPrefab: {fileID: 1785182840384812, guid: 8cfe11f9b0ad3cb4c822836f04a78fe8,
     type: 2}
   CurvedLinePrefab: {fileID: 1329139477144030, guid: 68efde0a7bf613748a9a1299c0131258,
     type: 2}

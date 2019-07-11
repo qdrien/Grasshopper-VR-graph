@@ -223,6 +223,7 @@ namespace VRTK
         protected bool snappedInSnapDropZone = false;
         protected VRTK_SnapDropZone storedSnapDropZone;
         protected Vector3 previousLocalScale = Vector3.zero;
+        protected Quaternion previousLocalRotation = Quaternion.identity;
         protected bool startDisabled = false;
 
         /// <summary>
@@ -703,6 +704,8 @@ namespace VRTK
             if (!IsGrabbed() && !snappedInSnapDropZone)
             {
                 previousParent = transform.parent;
+                previousLocalScale = transform.localScale;
+                previousLocalRotation = transform.localRotation;
                 if (!IsSwappable())
                 {
                     previousIsGrabbable = isGrabbable;
@@ -1148,6 +1151,8 @@ namespace VRTK
             if (gameObject.activeInHierarchy)
             {
                 transform.SetParent(previousParent);
+                transform.localRotation = previousLocalRotation;
+                transform.localScale = previousLocalScale;
                 forcedDropped = false;
             }
             if (interactableRigidbody != null)
