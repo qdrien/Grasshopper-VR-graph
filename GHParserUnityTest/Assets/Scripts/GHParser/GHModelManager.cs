@@ -132,6 +132,11 @@ public class GHModelManager : Singleton<GHModelManager>
                         sphere.name = port.Guid.ToString();
                     }
                 }
+                GameObject testCube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                testCube.transform.name = "TestCollider";
+                testCube.transform.SetParent(cube.transform);
+                testCube.transform.localScale = Vector3.one;
+                testCube.transform.localPosition = Vector3.zero;
             }
         }
 
@@ -166,6 +171,8 @@ public class GHModelManager : Singleton<GHModelManager>
         List<Vector3> lines = new List<Vector3>(orderedGroups.Count * 24);
         foreach (Group group in orderedGroups.Keys)
         {
+            Debug.LogError("Ignoring groups for testing purposes");
+            break;
             //Debug.Log("Group " + group.Nickname + "(" + group.Guid + ")");
             float minX, maxX, minY, maxY, minZ, maxZ;
             minX = minY = minZ = float.PositiveInfinity;
@@ -310,7 +317,7 @@ public class GHModelManager : Singleton<GHModelManager>
         
         StartCoroutine(SetGroupOutlines(lines, 1f)); //in case the following line throws an NPE
         //(happens when the VR setup did not have enough time to be initialized)
-        LineDrawer.Instance.Lines = lines;
+        //LineDrawer.Instance.Lines = lines;
     }
     
     IEnumerator SetGroupOutlines(List<Vector3> lines, float delayTime)
