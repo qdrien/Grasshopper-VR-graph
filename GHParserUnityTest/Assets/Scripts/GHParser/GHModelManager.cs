@@ -132,6 +132,7 @@ public class GHModelManager : Singleton<GHModelManager>
                         sphere.name = port.Guid.ToString();
                     }
                 }
+
                 GameObject testCube = GameObject.CreatePrimitive(PrimitiveType.Cube);
                 testCube.transform.name = "TestCollider";
                 testCube.transform.SetParent(cube.transform);
@@ -140,32 +141,7 @@ public class GHModelManager : Singleton<GHModelManager>
             }
         }
 
-        foreach (Edge edge in graph.Edges)
-        {
-            Guid startGuid = edge.Source.Chunk.Guid;
-            Guid endGuid = edge.Target.Chunk.Guid;
-
-            Material white = new Material(Shader.Find("Unlit/Color")) {color = Color.white};
-            AddLine(startGuid, endGuid, white, Easings.Functions.HermiteEaseInOut);
-            ////Material magenta = new Material(Shader.Find("Unlit/Color")) { color = Color.magenta };
-            ////AddLine(startObject.position, endObject.position, magenta, Easings.Functions.ElasticEaseInOut);
-            ////Material green = new Material(Shader.Find("Unlit/Color")) { color = Color.green };
-            ////AddLine(startObject.position, endObject.position, green, Easings.Functions.BackEaseInOut);
-            ////Material black = new Material(Shader.Find("Unlit/Color")) { color = Color.black };
-            ////AddLine(startObject.position, endObject.position, black, Easings.Functions.BounceEaseInOut);
-            //Material blue = new Material(Shader.Find("Unlit/Color")) { color = Color.blue };
-            //AddLine(startGuid, endGuid, blue, Easings.Functions.CircularEaseInOut);
-            ////Material gray = new Material(Shader.Find("Unlit/Color")) { color = Color.gray };
-            ////AddLine(startObject.position, endObject.position, gray, Easings.Functions.CubicEaseInOut);
-            //Material red = new Material(Shader.Find("Unlit/Color")) { color = Color.red };
-            //AddLine(startGuid, endGuid, red, Easings.Functions.ExponentialEaseInOut);
-            ////Material cyan = new Material(Shader.Find("Unlit/Color")) { color = Color.cyan };
-            ////AddLine(startObject.position, endObject.position, cyan, Easings.Functions.QuadraticEaseInOut);
-            ////Material yellow = new Material(Shader.Find("Unlit/Color")) { color = Color.yellow };
-            ////AddLine(startObject.position, endObject.position, yellow, Easings.Functions.QuinticEaseInOut);
-
-            //Debug.DrawLine(startObject.position, endObject.position, Color.white, 100f);
-        }
+        RefreshEdges(graph);
 
         OrderedDictionary orderedGroups = ParametricModel.OrderGroupsWithDepth(groups);
         List<Vector3> lines = new List<Vector3>(orderedGroups.Count * 24);
@@ -205,7 +181,7 @@ public class GHModelManager : Singleton<GHModelManager>
                     {
                         minX = corner1.x;
                     }
-                    
+
                     if (corner2.x > maxX)
                     {
                         maxX = corner2.x;
@@ -314,12 +290,58 @@ public class GHModelManager : Singleton<GHModelManager>
                 Debug.Log(lines[i] + "->" + lines[i + 1]);
             }*/
         }
-        
+
         StartCoroutine(SetGroupOutlines(lines, 1f)); //in case the following line throws an NPE
         //(happens when the VR setup did not have enough time to be initialized)
         //LineDrawer.Instance.Lines = lines;
     }
-    
+
+    public void RefreshEdges() //todo: should only refresh the affected edges to avoid the delay...
+    {
+        Debug.Log("Refreshing edges");
+        BidirectionalGraph<Vertex,Edge> graph = _parametricModel.Graph;
+        RefreshEdges(graph);
+    }
+
+    public void RefreshEdges(BidirectionalGraph<Vertex, Edge> graph)
+    {
+        foreach (Transform child in LinesContainer.transform)
+        {
+            foreach (Transform grandChild in child)
+            {
+                Destroy(grandChild.gameObject);
+            }
+            Destroy(child.gameObject);
+        }
+
+        foreach (Edge edge in graph.Edges)
+        {
+            Guid startGuid = edge.Source.Chunk.Guid;
+            Guid endGuid = edge.Target.Chunk.Guid;
+
+            Material white = new Material(Shader.Find("Unlit/Color")) {color = Color.white};
+            AddLine(startGuid, endGuid, white, Easings.Functions.HermiteEaseInOut);
+            ////Material magenta = new Material(Shader.Find("Unlit/Color")) { color = Color.magenta };
+            ////AddLine(startObject.position, endObject.position, magenta, Easings.Functions.ElasticEaseInOut);
+            ////Material green = new Material(Shader.Find("Unlit/Color")) { color = Color.green };
+            ////AddLine(startObject.position, endObject.position, green, Easings.Functions.BackEaseInOut);
+            ////Material black = new Material(Shader.Find("Unlit/Color")) { color = Color.black };
+            ////AddLine(startObject.position, endObject.position, black, Easings.Functions.BounceEaseInOut);
+            //Material blue = new Material(Shader.Find("Unlit/Color")) { color = Color.blue };
+            //AddLine(startGuid, endGuid, blue, Easings.Functions.CircularEaseInOut);
+            ////Material gray = new Material(Shader.Find("Unlit/Color")) { color = Color.gray };
+            ////AddLine(startObject.position, endObject.position, gray, Easings.Functions.CubicEaseInOut);
+            //Material red = new Material(Shader.Find("Unlit/Color")) { color = Color.red };
+            //AddLine(startGuid, endGuid, red, Easings.Functions.ExponentialEaseInOut);
+            ////Material cyan = new Material(Shader.Find("Unlit/Color")) { color = Color.cyan };
+            ////AddLine(startObject.position, endObject.position, cyan, Easings.Functions.QuadraticEaseInOut);
+            ////Material yellow = new Material(Shader.Find("Unlit/Color")) { color = Color.yellow };
+            ////AddLine(startObject.position, endObject.position, yellow, Easings.Functions.QuinticEaseInOut);
+
+            //Debug.DrawLine(startObject.position, endObject.position, Color.white, 100f);
+        }
+    }
+
     IEnumerator SetGroupOutlines(List<Vector3> lines, float delayTime)
     {
         yield return new WaitForSeconds(delayTime);
