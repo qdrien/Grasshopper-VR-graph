@@ -296,35 +296,102 @@ public class GHModelManager : Singleton<GHModelManager>
         //LineDrawer.Instance.Lines = lines;
     }
 
-    public void RefreshEdges() //todo: should only refresh the affected edges to avoid the delay...
+    public void RefreshEdges()
     {
         Debug.Log("Refreshing edges");
         BidirectionalGraph<Vertex,Edge> graph = _parametricModel.Graph;
         RefreshEdges(graph);
     }
     
-    
+    /// <summary>
+    /// Selective refreshing of edges related to a specific vertex.
+    /// (only this vertex's edges and its ports' edges if this is an IOComponent)
+    /// </summary>
+    /// <param name="vertex"></param>
     public void RefreshEdges(Vertex vertex)
     {
-        RefreshEdges();
-        return;
+        List<string> toRefresh = new List<string>();
+        
         BidirectionalGraph<Vertex,Edge> graph = _parametricModel.Graph;
+        string targetVertex = vertex.Chunk.Guid.ToString();
         if (vertex.Chunk is IoComponent)
         {
-            //todo: only refresh the corresponding edges (includes I/O ports <-> component and I/O ports <-> other component(s)
+            foreach (Transform child in LinesContainer.transform)
+            {
+                if (child.name.Contains(targetVertex))
+                {
+                    string edge = child.name;
+                    toRefresh.Add(edge);
+                    if (edge.StartsWith(targetVertex))
+                    {
+                        string outputPort = edge.Split(new []{"->"}, StringSplitOptions.None)[1];
+                        foreach (Transform potentialOutEdge in LinesContainer.transform)
+                        {
+                            if (potentialOutEdge.name.StartsWith(outputPort))
+                            {
+                                toRefresh.Add(potentialOutEdge.name);
+                                foreach (Transform potentialOutEdgeChild in potentialOutEdge)
+                                {
+                                    Destroy(potentialOutEdgeChild.gameObject);
+                                }
+                                Destroy(potentialOutEdge.gameObject);
+                            }
+                        }
+                    }
+                    else if (edge.EndsWith(targetVertex))
+                    {
+                        string inputPort = edge.Split(new []{"->"}, StringSplitOptions.None)[0];
+                        foreach (Transform potentialInEdge in LinesContainer.transform)
+                        {
+                            if (potentialInEdge.name.EndsWith(inputPort))
+                            {
+                                toRefresh.Add(potentialInEdge.name);
+                                foreach (Transform potentialInEdgeChild in potentialInEdge)
+                                {
+                                    Destroy(potentialInEdgeChild.gameObject);
+                                }
+                                Destroy(potentialInEdge.gameObject);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Debug.LogError("Something went wrong, should have either started or ended with the target vertex's id");
+                    }
+
+                    foreach (Transform grandChild in child)
+                    {
+                        Destroy(grandChild.gameObject);
+                    }
+                    Destroy(child.gameObject);
+                }
+            }
         }
         else if (vertex.Chunk is PrimitiveComponent)
         {
-            //todo: only refresh the corresponding edges
             foreach (Transform child in LinesContainer.transform)
             {
-                //if()
-                foreach (Transform grandChild in child)
+                if (child.name.Contains(targetVertex))
                 {
-                    Destroy(grandChild.gameObject);
+                    toRefresh.Add(child.name);
+                    
+                    foreach (Transform grandChild in child)
+                    {
+                        Destroy(grandChild.gameObject);
+                    }
+                    Destroy(child.gameObject);
                 }
-                Destroy(child.gameObject);
             }
+        }
+        
+        //After the deletion process because otherwise AddLine would modify the LinesContainer we are iterating on
+        foreach (string edge in toRefresh)
+        {
+            string[] endpoints = edge.Split(new[] {"->"}, StringSplitOptions.None);
+            Guid startGuid = new Guid(endpoints[0]);
+            Guid endGuid = new Guid(endpoints[1]);
+            Material white = new Material(Shader.Find("Unlit/Color")) {color = Color.white};
+            AddLine(startGuid, endGuid, white, Easings.Functions.HermiteEaseInOut);
         }
     }
 
