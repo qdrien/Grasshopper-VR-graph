@@ -274,7 +274,6 @@ GameObject:
   - component: {fileID: 109582314}
   - component: {fileID: 109582317}
   - component: {fileID: 109582316}
-  - component: {fileID: 109582318}
   m_Layer: 0
   m_Name: RightControllerScriptAlias
   m_TagString: Untagged
@@ -442,58 +441,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   customColliderContainer: {fileID: 0}
---- !u!114 &109582318
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 109582311}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8968b5d420eccb44b9ca55dd8b291b46, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  OnControllerStartGrabInteractableObject:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: VRTK.UnityEventHelper.VRTK_InteractGrab_UnityEvents+ObjectInteractEvent,
-      Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  OnControllerGrabInteractableObject:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: VRTK.UnityEventHelper.VRTK_InteractGrab_UnityEvents+ObjectInteractEvent,
-      Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  OnControllerStartUngrabInteractableObject:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: VRTK.UnityEventHelper.VRTK_InteractGrab_UnityEvents+ObjectInteractEvent,
-      Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  OnControllerUngrabInteractableObject:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 881049326}
-        m_MethodName: RefreshEdges
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: RefreshEdges
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_TypeName: VRTK.UnityEventHelper.VRTK_InteractGrab_UnityEvents+ObjectInteractEvent,
-      Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  OnGrabButtonPressed:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: VRTK.UnityEventHelper.VRTK_ControllerEvents_UnityEvents+ControllerInteractionEvent,
-      Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  OnGrabButtonReleased:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: VRTK.UnityEventHelper.VRTK_ControllerEvents_UnityEvents+ControllerInteractionEvent,
-      Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
 --- !u!1 &136028232
 GameObject:
   m_ObjectHideFlags: 0
@@ -530,10 +477,10 @@ RectTransform:
   m_Father: {fileID: 1012319334}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 66, y: -30}
+  m_SizeDelta: {x: 132, y: 22}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &136028234
 MonoBehaviour:
@@ -750,7 +697,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe5040c2eaa9ff147b80ded004191c67, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameObjectToFollow: {fileID: 2109046164}
+  gameObjectToFollow: {fileID: 0}
   gameObjectToChange: {fileID: 0}
   followsPosition: 1
   smoothsPosition: 0
@@ -761,7 +708,7 @@ MonoBehaviour:
   followsScale: 1
   smoothsScale: 0
   maxAllowedPerFrameSizeDifference: 0.003
-  _moment: 2
+  _moment: 3
 --- !u!114 &249738264
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1219,52 +1166,6 @@ Transform:
   m_Father: {fileID: 1053233224}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &352226720
-Prefab:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 1323997212}
-    m_Modifications:
-    - target: {fileID: 458990, guid: 4f35fa249b5008c44ac2998be6f82d4d, type: 2}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 458990, guid: 4f35fa249b5008c44ac2998be6f82d4d, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 458990, guid: 4f35fa249b5008c44ac2998be6f82d4d, type: 2}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 458990, guid: 4f35fa249b5008c44ac2998be6f82d4d, type: 2}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 458990, guid: 4f35fa249b5008c44ac2998be6f82d4d, type: 2}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 458990, guid: 4f35fa249b5008c44ac2998be6f82d4d, type: 2}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 458990, guid: 4f35fa249b5008c44ac2998be6f82d4d, type: 2}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 458990, guid: 4f35fa249b5008c44ac2998be6f82d4d, type: 2}
-      propertyPath: m_RootOrder
-      value: 1
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_ParentPrefab: {fileID: 100100000, guid: 4f35fa249b5008c44ac2998be6f82d4d, type: 2}
-  m_IsPrefabParent: 0
---- !u!4 &352226721 stripped
-Transform:
-  m_PrefabParentObject: {fileID: 458990, guid: 4f35fa249b5008c44ac2998be6f82d4d, type: 2}
-  m_PrefabInternal: {fileID: 352226720}
 --- !u!1 &375406887
 GameObject:
   m_ObjectHideFlags: 0
@@ -1302,12 +1203,12 @@ MonoBehaviour:
   autoManageVRSettings: 1
   autoLoadSetup: 1
   setups:
-  - {fileID: 669682254}
-  - {fileID: 1973566709}
-  - {fileID: 1323997213}
-  - {fileID: 1273088236}
+  - {fileID: 1079086115}
   - {fileID: 1532795556}
-  excludeTargetGroups: 1a0000001b000000
+  - {fileID: 1273088236}
+  - {fileID: 1973566709}
+  - {fileID: 669682254}
+  excludeTargetGroups: 1b0000001a000000
   persistOnLoad: 0
 --- !u!4 &375406889
 Transform:
@@ -1869,7 +1770,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47c59b7efa7457f458abdbdf0e7b127a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GLMat: {fileID: 2100000, guid: 095262052427a1d48a9ae01f7838086c, type: 2}
+  GLMat: {fileID: 0}
   GridDepth: 100
   TileLength: 1
   GridZPosition: -0.038
@@ -2342,6 +2243,52 @@ MeshFilter:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 597367418}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &629263295 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 1852225169218100, guid: 0f40a24f9c86d714c8a826d586f91c4a,
+    type: 2}
+  m_PrefabInternal: {fileID: 1079086113}
+--- !u!114 &629263296
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 629263295}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6bca9ccf900ccc84c887d783321d27e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _head: {fileID: 2029165794}
+  _ears: {fileID: 965750345}
+  wireframe: 0
+--- !u!114 &629263297
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 629263295}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 47c59b7efa7457f458abdbdf0e7b127a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GLMat: {fileID: 2100000, guid: 095262052427a1d48a9ae01f7838086c, type: 2}
+  GridDepth: 100
+  TileLength: 1
+  GridZPosition: -0.038
+--- !u!114 &629263298
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 629263295}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8726ca2868dad6141ab5ac25344faef3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GLMat: {fileID: 2100000, guid: 1055938dd240bdf4595b5e3bc0f8ad5b, type: 2}
 --- !u!1 &631840821
 GameObject:
   m_ObjectHideFlags: 0
@@ -2432,12 +2379,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a56f0178eefe7b9409460ae29588f961, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nodeType: 4
-  index: 1
-  triggerAxisName: LeftTrigger
-  gripAxisName: LeftGrip
-  touchpadHorizontalAxisName: LeftTrackpadHorizontal
-  touchpadVerticalAxisName: LeftTrackpadVertical
+  nodeType: 0
+  index: 0
+  triggerAxisName: 
+  gripAxisName: 
+  touchpadHorizontalAxisName: 
+  touchpadVerticalAxisName: 
 --- !u!1 &669682252
 GameObject:
   m_ObjectHideFlags: 0
@@ -2482,13 +2429,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eeda6d41317f444b900e374895f14e95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  autoPopulateObjectReferences: 0
-  actualBoundaries: {fileID: 1593203626}
-  actualHeadset: {fileID: 1537812364}
-  actualLeftController: {fileID: 836310935}
-  actualRightController: {fileID: 466378313}
-  modelAliasLeftController: {fileID: 254889326}
-  modelAliasRightController: {fileID: 903142940}
+  autoPopulateObjectReferences: 1
+  actualBoundaries: {fileID: 0}
+  actualHeadset: {fileID: 0}
+  actualLeftController: {fileID: 0}
+  actualRightController: {fileID: 0}
+  modelAliasLeftController: {fileID: 0}
+  modelAliasRightController: {fileID: 0}
   cachedSystemSDKInfo:
     baseTypeName: VRTK.SDK_BaseSystem
     fallbackTypeName: VRTK.SDK_FallbackSystem
@@ -2566,7 +2513,7 @@ Transform:
   m_Children:
   - {fileID: 1532795557}
   - {fileID: 1273088235}
-  - {fileID: 1323997212}
+  - {fileID: 1079086114}
   - {fileID: 1973566708}
   - {fileID: 669682253}
   m_Father: {fileID: 375406889}
@@ -2836,10 +2783,10 @@ RectTransform:
   m_Father: {fileID: 1012319334}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 66, y: -55}
+  m_SizeDelta: {x: 132, y: 22}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &767856344
 MonoBehaviour:
@@ -2993,10 +2940,6 @@ Transform:
   m_Father: {fileID: 272650894}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &783308383 stripped
-Transform:
-  m_PrefabParentObject: {fileID: 439042, guid: 4d293c8e162f3874b982baadd71153d2, type: 2}
-  m_PrefabInternal: {fileID: 1399338732}
 --- !u!1 &802793201
 GameObject:
   m_ObjectHideFlags: 0
@@ -3277,10 +3220,10 @@ RectTransform:
   m_Father: {fileID: 1723726417}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 62, y: -30}
+  m_SizeDelta: {x: 124, y: 22}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &855751249
 MonoBehaviour:
@@ -3571,10 +3514,10 @@ RectTransform:
   m_Father: {fileID: 1012319334}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 66, y: -8}
+  m_SizeDelta: {x: 132, y: 16}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &896359970
 MonoBehaviour:
@@ -3709,10 +3652,10 @@ RectTransform:
   m_Father: {fileID: 136028233}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 66, y: -11}
+  m_SizeDelta: {x: 44, y: 16}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &934129054
 MonoBehaviour:
@@ -3755,6 +3698,11 @@ CanvasRenderer:
     type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 934129052}
+--- !u!4 &965750345 stripped
+Transform:
+  m_PrefabParentObject: {fileID: 4083327494072146, guid: 0f40a24f9c86d714c8a826d586f91c4a,
+    type: 2}
+  m_PrefabInternal: {fileID: 1079086113}
 --- !u!1 &975432479
 GameObject:
   m_ObjectHideFlags: 0
@@ -3815,12 +3763,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a56f0178eefe7b9409460ae29588f961, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nodeType: 5
+  nodeType: 0
   index: 0
-  triggerAxisName: RightTrigger
-  gripAxisName: RightGrip
-  touchpadHorizontalAxisName: RightTrackpadHorizontal
-  touchpadVerticalAxisName: RightTrackpadVertical
+  triggerAxisName: 
+  gripAxisName: 
+  touchpadHorizontalAxisName: 
+  touchpadVerticalAxisName: 
 --- !u!1 &1001752936
 GameObject:
   m_ObjectHideFlags: 0
@@ -3966,10 +3914,10 @@ RectTransform:
   m_Father: {fileID: 1778773255}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 71, y: -82}
+  m_SizeDelta: {x: 132, y: 66}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1012319335
 MonoBehaviour:
@@ -4108,6 +4056,64 @@ MeshFilter:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1053233223}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1001 &1079086113
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 707624614}
+    m_Modifications:
+    - target: {fileID: 4131573168436350, guid: 0f40a24f9c86d714c8a826d586f91c4a, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4131573168436350, guid: 0f40a24f9c86d714c8a826d586f91c4a, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4131573168436350, guid: 0f40a24f9c86d714c8a826d586f91c4a, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4131573168436350, guid: 0f40a24f9c86d714c8a826d586f91c4a, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4131573168436350, guid: 0f40a24f9c86d714c8a826d586f91c4a, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4131573168436350, guid: 0f40a24f9c86d714c8a826d586f91c4a, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4131573168436350, guid: 0f40a24f9c86d714c8a826d586f91c4a, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4131573168436350, guid: 0f40a24f9c86d714c8a826d586f91c4a, type: 2}
+      propertyPath: m_RootOrder
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1957040998050066, guid: 0f40a24f9c86d714c8a826d586f91c4a, type: 2}
+      propertyPath: m_Name
+      value: SteamVR
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 114793408152241568, guid: 0f40a24f9c86d714c8a826d586f91c4a, type: 2}
+  m_ParentPrefab: {fileID: 100100000, guid: 0f40a24f9c86d714c8a826d586f91c4a, type: 2}
+  m_IsPrefabParent: 0
+--- !u!4 &1079086114 stripped
+Transform:
+  m_PrefabParentObject: {fileID: 4131573168436350, guid: 0f40a24f9c86d714c8a826d586f91c4a,
+    type: 2}
+  m_PrefabInternal: {fileID: 1079086113}
+--- !u!114 &1079086115 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114119133379516668, guid: 0f40a24f9c86d714c8a826d586f91c4a,
+    type: 2}
+  m_PrefabInternal: {fileID: 1079086113}
+  m_Script: {fileID: 11500000, guid: eeda6d41317f444b900e374895f14e95, type: 3}
 --- !u!1 &1099037437
 GameObject:
   m_ObjectHideFlags: 0
@@ -4269,10 +4275,6 @@ MonoBehaviour:
   customPlayAreaRigidbody: {fileID: 0}
   customBodyColliderContainer: {fileID: 0}
   customFootColliderContainer: {fileID: 0}
---- !u!4 &1106827858 stripped
-Transform:
-  m_PrefabParentObject: {fileID: 408470, guid: 4d293c8e162f3874b982baadd71153d2, type: 2}
-  m_PrefabInternal: {fileID: 1399338732}
 --- !u!1 &1167960071
 GameObject:
   m_ObjectHideFlags: 0
@@ -4388,15 +4390,15 @@ MonoBehaviour:
   showHandAxisHelpers: 1
   lockMouseToView: 1
   mouseMovementInput: 0
-  handMoveMultiplier: 0.2
-  handRotationMultiplier: 30
+  handMoveMultiplier: 0.002
+  handRotationMultiplier: 0.5
   playerMoveMultiplier: 5
   playerRotationMultiplier: 0.5
   playerSprintMultiplier: 2
   lockedCursorMultiplier: 5
   leftHandColor: {r: 1, g: 0, b: 0, a: 1}
   rightHandColor: {r: 0, g: 1, b: 0, a: 1}
-  mouseMovementKey: 325
+  mouseMovementKey: 324
   toggleControlHints: 282
   toggleMouseLock: 285
   changeHands: 9
@@ -4536,7 +4538,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eeda6d41317f444b900e374895f14e95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  autoPopulateObjectReferences: 0
+  autoPopulateObjectReferences: 1
   actualBoundaries: {fileID: 1010422656}
   actualHeadset: {fileID: 10941970}
   actualLeftController: {fileID: 637049505}
@@ -4599,78 +4601,6 @@ Transform:
   m_Father: {fileID: 2109046167}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1323997211
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 1909961235701230, guid: eb6748575a8fce346b19dff6cb1471ec,
-    type: 2}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 5
-  m_Component:
-  - component: {fileID: 1323997212}
-  - component: {fileID: 1323997213}
-  m_Layer: 0
-  m_Name: SteamVR
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &1323997212
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 4537372498265190, guid: eb6748575a8fce346b19dff6cb1471ec,
-    type: 2}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1323997211}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 1399338733}
-  - {fileID: 352226721}
-  m_Father: {fileID: 707624614}
-  m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1323997213
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 114389149273762552, guid: eb6748575a8fce346b19dff6cb1471ec,
-    type: 2}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1323997211}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eeda6d41317f444b900e374895f14e95, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  autoPopulateObjectReferences: 0
-  actualBoundaries: {fileID: 1399338739}
-  actualHeadset: {fileID: 1399338734}
-  actualLeftController: {fileID: 1399338738}
-  actualRightController: {fileID: 1399338736}
-  modelAliasLeftController: {fileID: 1399338737}
-  modelAliasRightController: {fileID: 1399338735}
-  cachedSystemSDKInfo:
-    baseTypeName: VRTK.SDK_BaseSystem
-    fallbackTypeName: VRTK.SDK_FallbackSystem
-    typeName: VRTK.SDK_SteamVRSystem
-    descriptionIndex: 0
-  cachedBoundariesSDKInfo:
-    baseTypeName: VRTK.SDK_BaseBoundaries
-    fallbackTypeName: VRTK.SDK_FallbackBoundaries
-    typeName: VRTK.SDK_SteamVRBoundaries
-    descriptionIndex: 0
-  cachedHeadsetSDKInfo:
-    baseTypeName: VRTK.SDK_BaseHeadset
-    fallbackTypeName: VRTK.SDK_FallbackHeadset
-    typeName: VRTK.SDK_SteamVRHeadset
-    descriptionIndex: 0
-  cachedControllerSDKInfo:
-    baseTypeName: VRTK.SDK_BaseController
-    fallbackTypeName: VRTK.SDK_FallbackController
-    typeName: VRTK.SDK_SteamVRController
-    descriptionIndex: 0
 --- !u!1 &1329213974
 GameObject:
   m_ObjectHideFlags: 0
@@ -4772,123 +4702,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &1399338732
-Prefab:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 1323997212}
-    m_Modifications:
-    - target: {fileID: 420908, guid: 4d293c8e162f3874b982baadd71153d2, type: 2}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 420908, guid: 4d293c8e162f3874b982baadd71153d2, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 420908, guid: 4d293c8e162f3874b982baadd71153d2, type: 2}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 420908, guid: 4d293c8e162f3874b982baadd71153d2, type: 2}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 420908, guid: 4d293c8e162f3874b982baadd71153d2, type: 2}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 420908, guid: 4d293c8e162f3874b982baadd71153d2, type: 2}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 420908, guid: 4d293c8e162f3874b982baadd71153d2, type: 2}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 420908, guid: 4d293c8e162f3874b982baadd71153d2, type: 2}
-      propertyPath: m_RootOrder
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 11489174, guid: 4d293c8e162f3874b982baadd71153d2, type: 2}
-      propertyPath: size
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 11420968, guid: 4d293c8e162f3874b982baadd71153d2, type: 2}
-    - {fileID: 11411836, guid: 4d293c8e162f3874b982baadd71153d2, type: 2}
-  m_ParentPrefab: {fileID: 100100000, guid: 4d293c8e162f3874b982baadd71153d2, type: 2}
-  m_IsPrefabParent: 0
---- !u!4 &1399338733 stripped
-Transform:
-  m_PrefabParentObject: {fileID: 420908, guid: 4d293c8e162f3874b982baadd71153d2, type: 2}
-  m_PrefabInternal: {fileID: 1399338732}
---- !u!1 &1399338734 stripped
-GameObject:
-  m_PrefabParentObject: {fileID: 189822, guid: 4d293c8e162f3874b982baadd71153d2, type: 2}
-  m_PrefabInternal: {fileID: 1399338732}
---- !u!1 &1399338735 stripped
-GameObject:
-  m_PrefabParentObject: {fileID: 192944, guid: 4d293c8e162f3874b982baadd71153d2, type: 2}
-  m_PrefabInternal: {fileID: 1399338732}
---- !u!1 &1399338736 stripped
-GameObject:
-  m_PrefabParentObject: {fileID: 159396, guid: 4d293c8e162f3874b982baadd71153d2, type: 2}
-  m_PrefabInternal: {fileID: 1399338732}
---- !u!1 &1399338737 stripped
-GameObject:
-  m_PrefabParentObject: {fileID: 147176, guid: 4d293c8e162f3874b982baadd71153d2, type: 2}
-  m_PrefabInternal: {fileID: 1399338732}
---- !u!1 &1399338738 stripped
-GameObject:
-  m_PrefabParentObject: {fileID: 124034, guid: 4d293c8e162f3874b982baadd71153d2, type: 2}
-  m_PrefabInternal: {fileID: 1399338732}
---- !u!1 &1399338739 stripped
-GameObject:
-  m_PrefabParentObject: {fileID: 146900, guid: 4d293c8e162f3874b982baadd71153d2, type: 2}
-  m_PrefabInternal: {fileID: 1399338732}
---- !u!114 &1399338740
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1399338734}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6bca9ccf900ccc84c887d783321d27e2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _head: {fileID: 1106827858}
-  _ears: {fileID: 783308383}
-  wireframe: 1
---- !u!114 &1399338756
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1399338734}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8726ca2868dad6141ab5ac25344faef3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  GLMat: {fileID: 2100000, guid: 311313efa011949e98b6761d652ad13c, type: 2}
---- !u!114 &1399338757
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1399338734}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 47c59b7efa7457f458abdbdf0e7b127a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  GLMat: {fileID: 2100000, guid: 095262052427a1d48a9ae01f7838086c, type: 2}
-  GridDepth: 100
-  TileLength: 1
-  GridZPosition: -0.038
 --- !u!1 &1408711848
 GameObject:
   m_ObjectHideFlags: 0
@@ -4902,7 +4715,6 @@ GameObject:
   - component: {fileID: 1408711851}
   - component: {fileID: 1408711854}
   - component: {fileID: 1408711853}
-  - component: {fileID: 1408711855}
   m_Layer: 0
   m_Name: LeftControllerScriptAlias
   m_TagString: Untagged
@@ -5070,58 +4882,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   customColliderContainer: {fileID: 0}
---- !u!114 &1408711855
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1408711848}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8968b5d420eccb44b9ca55dd8b291b46, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  OnControllerStartGrabInteractableObject:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: VRTK.UnityEventHelper.VRTK_InteractGrab_UnityEvents+ObjectInteractEvent,
-      Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  OnControllerGrabInteractableObject:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: VRTK.UnityEventHelper.VRTK_InteractGrab_UnityEvents+ObjectInteractEvent,
-      Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  OnControllerStartUngrabInteractableObject:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: VRTK.UnityEventHelper.VRTK_InteractGrab_UnityEvents+ObjectInteractEvent,
-      Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  OnControllerUngrabInteractableObject:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 881049326}
-        m_MethodName: RefreshEdges
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: RefreshEdges
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_TypeName: VRTK.UnityEventHelper.VRTK_InteractGrab_UnityEvents+ObjectInteractEvent,
-      Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  OnGrabButtonPressed:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: VRTK.UnityEventHelper.VRTK_ControllerEvents_UnityEvents+ControllerInteractionEvent,
-      Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  OnGrabButtonReleased:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: VRTK.UnityEventHelper.VRTK_ControllerEvents_UnityEvents+ControllerInteractionEvent,
-      Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
 --- !u!1 &1414072373
 GameObject:
   m_ObjectHideFlags: 0
@@ -5305,7 +5065,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eeda6d41317f444b900e374895f14e95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  autoPopulateObjectReferences: 0
+  autoPopulateObjectReferences: 1
   actualBoundaries: {fileID: 1226472759}
   actualHeadset: {fileID: 563083155}
   actualLeftController: {fileID: 1167960071}
@@ -5771,10 +5531,10 @@ RectTransform:
   m_Father: {fileID: 1778773255}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 71, y: -25.5}
+  m_SizeDelta: {x: 124, y: 41}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1723726418
 MonoBehaviour:
@@ -5926,10 +5686,10 @@ RectTransform:
   m_Father: {fileID: 855751248}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 62, y: -11}
+  m_SizeDelta: {x: 114, y: 16}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1724731200
 MonoBehaviour:
@@ -6173,10 +5933,10 @@ RectTransform:
   m_Father: {fileID: 1416159692}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 591, y: -70}
+  m_SizeDelta: {x: 142, y: 120}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1778773256
 MonoBehaviour:
@@ -6421,10 +6181,10 @@ RectTransform:
   m_Father: {fileID: 1723726417}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 62, y: -8}
+  m_SizeDelta: {x: 121, y: 16}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1816292947
 MonoBehaviour:
@@ -6667,10 +6427,10 @@ RectTransform:
   m_Father: {fileID: 767856343}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 66, y: -11}
+  m_SizeDelta: {x: 121, y: 16}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1940507745
 MonoBehaviour:
@@ -6801,13 +6561,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eeda6d41317f444b900e374895f14e95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  autoPopulateObjectReferences: 0
-  actualBoundaries: {fileID: 2109046164}
-  actualHeadset: {fileID: 486331998}
-  actualLeftController: {fileID: 723326696}
-  actualRightController: {fileID: 931768460}
-  modelAliasLeftController: {fileID: 189409150}
-  modelAliasRightController: {fileID: 1963640660}
+  autoPopulateObjectReferences: 1
+  actualBoundaries: {fileID: 0}
+  actualHeadset: {fileID: 0}
+  actualLeftController: {fileID: 0}
+  actualRightController: {fileID: 0}
+  modelAliasLeftController: {fileID: 0}
+  modelAliasRightController: {fileID: 0}
   cachedSystemSDKInfo:
     baseTypeName: VRTK.SDK_BaseSystem
     fallbackTypeName: VRTK.SDK_FallbackSystem
@@ -6871,6 +6631,11 @@ MonoBehaviour:
   m_Script: {fileID: 0}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!4 &2029165794 stripped
+Transform:
+  m_PrefabParentObject: {fileID: 4638952200550222, guid: 0f40a24f9c86d714c8a826d586f91c4a,
+    type: 2}
+  m_PrefabInternal: {fileID: 1079086113}
 --- !u!1 &2061648870
 GameObject:
   m_ObjectHideFlags: 0

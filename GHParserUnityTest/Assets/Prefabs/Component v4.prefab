@@ -76,6 +76,7 @@ GameObject:
   - component: {fileID: 114330823207020308}
   - component: {fileID: 114367465360853734}
   - component: {fileID: 65641950925840798}
+  - component: {fileID: 114463428474496648}
   m_Layer: 0
   m_Name: Component v4
   m_TagString: Untagged
@@ -310,6 +311,17 @@ MonoBehaviour:
   objectToHighlight: {fileID: 0}
   objectHighlighter: {fileID: 0}
   objectToAffect: {fileID: 0}
+--- !u!114 &114463428474496648
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1785182840384812}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c6ba464e13860942beca5ff26bff256, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114636056254881090
 MonoBehaviour:
   m_ObjectHideFlags: 1

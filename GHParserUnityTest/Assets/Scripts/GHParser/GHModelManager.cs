@@ -302,6 +302,31 @@ public class GHModelManager : Singleton<GHModelManager>
         BidirectionalGraph<Vertex,Edge> graph = _parametricModel.Graph;
         RefreshEdges(graph);
     }
+    
+    
+    public void RefreshEdges(Vertex vertex)
+    {
+        RefreshEdges();
+        return;
+        BidirectionalGraph<Vertex,Edge> graph = _parametricModel.Graph;
+        if (vertex.Chunk is IoComponent)
+        {
+            //todo: only refresh the corresponding edges (includes I/O ports <-> component and I/O ports <-> other component(s)
+        }
+        else if (vertex.Chunk is PrimitiveComponent)
+        {
+            //todo: only refresh the corresponding edges
+            foreach (Transform child in LinesContainer.transform)
+            {
+                //if()
+                foreach (Transform grandChild in child)
+                {
+                    Destroy(grandChild.gameObject);
+                }
+                Destroy(child.gameObject);
+            }
+        }
+    }
 
     public void RefreshEdges(BidirectionalGraph<Vertex, Edge> graph)
     {
