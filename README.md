@@ -13,3 +13,4 @@ Goals:
   - Remove a link
   - Move the viewpoint (what part of the graph we currently see)
   - Scale the viewpoint (zoom in/out in the graph)
+  - Add/remove/"resize" group?
