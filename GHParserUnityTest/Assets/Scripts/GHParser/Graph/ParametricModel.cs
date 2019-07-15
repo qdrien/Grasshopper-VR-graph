@@ -418,7 +418,7 @@ namespace GHParser.Graph
             return output.ToString();
         }
 
-        public bool DeleteEdge(string edgeName)
+        public bool RemoveEdge(string edgeName)
         {
             string[] vertices = edgeName.Split(new[] {"->"}, StringSplitOptions.None);
             foreach (Edge edge in Graph.Edges)

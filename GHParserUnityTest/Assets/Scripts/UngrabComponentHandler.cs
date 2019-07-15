@@ -35,6 +35,8 @@ public class UngrabComponentHandler : MonoBehaviour {
 		{
 			Debug.Log("Deleting the object " + gameObject.name);
 
+			GHModelManager.Instance.RemoveVertex(interactableVertex.Vertex);
+
 			GetComponent<VRTK_InteractableObject>().enabled = false;
 			GetComponent<VRTK_ChildOfControllerGrabAttach>().enabled = false;
 			GetComponent<VRTK_SwapControllerGrabAction>().enabled = false;
@@ -50,8 +52,6 @@ public class UngrabComponentHandler : MonoBehaviour {
 			{
 				r.material = redMaterial;
 			}
-			
-			GHModelManager.Instance.RemoveEdges(interactableVertex.Vertex);
 		}
 		else
 		{

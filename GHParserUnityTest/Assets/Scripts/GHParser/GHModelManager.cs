@@ -343,7 +343,6 @@ public class GHModelManager : Singleton<GHModelManager>
     /// <param name="vertex"></param>
     public void RemoveEdges(Vertex vertex)
     {
-        BidirectionalGraph<Vertex,Edge> graph = _parametricModel.Graph; //TODO: update the graph as well
         string targetVertex = vertex.Chunk.Guid.ToString();
         if (vertex.Chunk is IoComponent)
         {
@@ -410,20 +409,6 @@ public class GHModelManager : Singleton<GHModelManager>
             }
         }
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     
     /// <summary>
     /// Selective refreshing of edges related to a specific vertex.
@@ -615,7 +600,7 @@ public class GHModelManager : Singleton<GHModelManager>
                 else if (lineCollider != null)
                 {
                     Debug.Log("Attempting to delete line " + lineCollider.name);
-                    if (_parametricModel.DeleteEdge(lineCollider.name))
+                    if (_parametricModel.RemoveEdge(lineCollider.name))
                     {
                         StartCoroutine(RedrawGraph(DrawingSurface));
                     }
@@ -785,9 +770,7 @@ public class GHModelManager : Singleton<GHModelManager>
 
     public void RemoveEdge(string edge)
     {
-        /*string[] vertices = edge.Split(new []{"->"}, StringSplitOptions.None);
-        string startVertex = vertices[0];
-        string endVertex = vertices[1];*/
+        _parametricModel.RemoveEdge(edge);
 
         foreach (Transform line in LinesContainer.transform)
         {
@@ -802,5 +785,12 @@ public class GHModelManager : Singleton<GHModelManager>
             }
         }
             
+    }
+
+    public void RemoveVertex(Vertex vertex)
+    {
+        _parametricModel.Graph.RemoveVertex(vertex);
+        //should probably call _parametricModel.SaveToGrasshopper("/GH files/whatever.ghx");
+        RemoveEdges(vertex);
     }
 }
