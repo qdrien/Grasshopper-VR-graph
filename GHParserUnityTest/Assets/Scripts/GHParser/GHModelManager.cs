@@ -352,8 +352,6 @@ public class GHModelManager : Singleton<GHModelManager>
     /// <param name="vertex"></param>
     public void RemoveEdges(Vertex vertex)
     {
-        List<string> toRefresh = new List<string>();
-        
         BidirectionalGraph<Vertex,Edge> graph = _parametricModel.Graph; //TODO: update the graph as well
         string targetVertex = vertex.Chunk.Guid.ToString();
         if (vertex.Chunk is IoComponent)
