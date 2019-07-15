@@ -43,7 +43,7 @@ public class GHModelManager : Singleton<GHModelManager>
         DrawBasicGraph(DrawingSurface, _parametricModel);
     }
 
-    private void DrawBasicGraph(Transform drawingSurface, ParametricModel parametricModel)
+    private void DrawBasicGraph(Transform drawingSurface, ParametricModel parametricModel) //TODO: extract parts of that method (e.g. to a AddComponent method)
     {
         BidirectionalGraph<Vertex, Edge> graph = parametricModel.Graph;
         List<Group> groups = parametricModel.Groups;
@@ -303,6 +303,46 @@ public class GHModelManager : Singleton<GHModelManager>
         Debug.Log("Refreshing edges");
         BidirectionalGraph<Vertex,Edge> graph = _parametricModel.Graph;
         RefreshEdges(graph);
+    }
+    
+    public void AddIOComponent(string componentName)
+    {
+        Debug.Log(componentName + " component attached to the controller.");
+    }
+
+    public void AddIOComponent(string componentName, Vector3 position)
+    {
+        Debug.Log(componentName + " component added at position "+ position +".");
+    }
+    
+    public void AddSliderComponent(string componentName, float value)
+    {
+        Debug.Log(componentName + " slider component attached to the controller with value "+ value +".");
+    }
+
+    public void AddSliderComponent(string componentName, float value, Vector3 position)
+    {
+        Debug.Log(componentName + " slider component added at position "+ position +"with value "+ value +".");
+    }
+
+    public void AddBooleanComponent(string componentName, bool value)
+    {
+        Debug.Log(componentName + " boolean component attached to the controller with value "+ value +".");
+    }
+
+    public void AddBooleanComponent(string componentName, bool value, Vector3 position)
+    {
+        Debug.Log(componentName + " boolean component added at position "+ position +"with value "+ value +".");
+    }
+    
+    public void AddPanelComponent(string componentName, string value)
+    {
+        Debug.Log(componentName + " panel component attached to the controller with value "+ value +".");
+    }
+
+    public void AddPanelComponent(string componentName, string value, Vector3 position)
+    {
+        Debug.Log(componentName + " panel component added at position "+ position +"with value "+ value +".");
     }
     
     /// <summary>
