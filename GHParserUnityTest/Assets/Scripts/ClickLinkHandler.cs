@@ -2,14 +2,12 @@
 using System.Collections.Generic;
 using GHParser.Graph;
 using UnityEngine;
-using UnityEngine.UI;
 using VRTK;
 using VRTK.GrabAttachMechanics;
 using VRTK.SecondaryControllerGrabActions;
 
-public class UngrabComponentHandler : MonoBehaviour {
+public class ClickLinkHandler : MonoBehaviour {
 
-	// Use this for initialization
 	void Start () {
 		VRTK_InteractableObject interactableObject = GetComponent<VRTK_InteractableObject>();
 		if (interactableObject == null)
@@ -17,11 +15,17 @@ public class UngrabComponentHandler : MonoBehaviour {
 			Debug.LogError("Need an InteractableObject script attached to this object.");
 			return;
 		}
-		interactableObject.InteractableObjectUngrabbed += OnComponentUngrabbed;
-		interactableObject.InteractableObjectGrabbed += OnComponentGrabbed;
+
+		interactableObject.InteractableObjectUsed += OnLinkUsed;
 	}
 
-	private void OnComponentGrabbed(object sender, InteractableObjectEventArgs e)
+	private void OnLinkUsed(object sender, InteractableObjectEventArgs e)
+	{
+		Debug.Log("Link used: " + gameObject.name);
+		GHModelManager.Instance.RemoveEdge(gameObject.name);
+	}
+
+	/*private void OnComponentGrabbed(object sender, InteractableObjectEventArgs e)
 	{
 		GetComponent<InteractableVertex>().StartTrackingVelocity();
 	}
@@ -58,5 +62,5 @@ public class UngrabComponentHandler : MonoBehaviour {
 		{
 			GHModelManager.Instance.RefreshEdges(interactableVertex.Vertex);
 		}
-	}
+	}*/
 }

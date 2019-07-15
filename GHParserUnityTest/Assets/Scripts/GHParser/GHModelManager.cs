@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Text;
 using GHParser.GHElements;
 using GHParser.Graph;
@@ -12,6 +13,7 @@ using HoloToolkit.Unity;
 using QuickGraph;
 using UnityEngine;
 using UnityEngine.UI;
+using Valve.VR;
 using Color = UnityEngine.Color;
 using Component = GHParser.GHElements.Component;
 
@@ -750,5 +752,26 @@ public class GHModelManager : Singleton<GHModelManager>
         rescale.y = targetYLength * rescale.y / currentYLength;
         rescale.z = targetZLength * rescale.z / currentZLength;
         target.localScale = rescale;
+    }
+
+    public void RemoveEdge(string edge)
+    {
+        /*string[] vertices = edge.Split(new []{"->"}, StringSplitOptions.None);
+        string startVertex = vertices[0];
+        string endVertex = vertices[1];*/
+
+        foreach (Transform line in LinesContainer.transform)
+        {
+            if (line.name.Equals(edge))
+            {
+                foreach (Transform child in line)
+                {
+                    Destroy(child.gameObject);
+                }
+
+                Destroy(line.gameObject);
+            }
+        }
+            
     }
 }

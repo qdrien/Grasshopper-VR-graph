@@ -9,6 +9,7 @@ namespace GHParser.Utils
     {
         private LineRenderer _lineRenderer;
         private Vector3[] _oldPositions;
+        private List<GameObject> _previousColliders = new List<GameObject>();
 
         private void Start()
         {
@@ -40,7 +41,11 @@ namespace GHParser.Utils
         
         private void UpdateColliders(Vector3[] positions)
         {
-            //Debug.LogError("Updating colliders for " + gameObject.name);
+            foreach (GameObject previousCollider in _previousColliders)
+            {
+                Destroy(previousCollider);
+            }
+            
             _oldPositions = positions;
 
             for (int i = 0; i < positions.Length - 1; i++)
@@ -48,6 +53,7 @@ namespace GHParser.Utils
                 Vector3 start = positions[i];
                 Vector3 end = positions[i + 1];
                 GameObject colliderContainer = new GameObject("Collider");
+                _previousColliders.Add(colliderContainer);
                 CapsuleCollider capsuleCollider = colliderContainer.AddComponent<CapsuleCollider>();
                 colliderContainer.transform.parent = transform;
                 colliderContainer.transform.position = Vector3.Lerp(start, end, .5f);
