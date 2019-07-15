@@ -43,7 +43,7 @@ public class GHModelManager : Singleton<GHModelManager>
         DrawBasicGraph(DrawingSurface, _parametricModel);
     }
 
-    private void DrawBasicGraph(Transform drawingSurface, ParametricModel parametricModel) //TODO: extract parts of that method (e.g. to a AddComponent method)
+    private void DrawBasicGraph(Transform drawingSurface, ParametricModel parametricModel)
     {
         BidirectionalGraph<Vertex, Edge> graph = parametricModel.Graph;
         List<Group> groups = parametricModel.Groups;
@@ -65,82 +65,7 @@ public class GHModelManager : Singleton<GHModelManager>
 
         foreach (Vertex vertex in graph.Vertices)
         {
-            Component component = vertex.Chunk as Component;
-            if (component != null)
-            {
-                GameObject cube = Instantiate(ComponentPrefab);
-                cube.name = component.Guid.ToString();
-                cube.AddComponent<InteractableVertex>().Vertex = vertex;
-                Text textComponent = cube.GetComponentInChildren<Text>();
-
-                textComponent.text =
-                    string.IsNullOrEmpty(component.Nickname)
-                        ? component.DefaultName
-                        : component.Nickname;
-                cube.transform.position = new Vector3(
-                    bottomLeft.x + (component.VisualBounds.X - modelBounds.X + component.VisualBounds.Width / 2f) /
-                    modelBounds.Width * dimensions.x,
-                    drawingSurface.transform.position.y + .03f,
-                    topRight.z - (component.VisualBounds.Y - modelBounds.Y + component.VisualBounds.Height / 2f) /
-                    modelBounds.Height * dimensions.z);
-
-                SetScaleWithDimensions(cube.transform, component.VisualBounds.Width / modelBounds.Width,
-                    component.VisualBounds.Height / modelBounds.Height);
-
-                cube.transform.SetParent(drawingSurface);
-
-                if (component is IoComponent)
-                {
-                    textComponent.transform.Rotate(0, 0, 90f);
-
-                    GameObject inputBlock = Instantiate(InputBlockPrefab);
-                    inputBlock.transform.SetParent(cube.transform.Find("InputBlockSpot"));
-                    Vector3 inputBlockExtents = inputBlock.GetComponentInChildren<Renderer>().bounds.extents;
-                    inputBlock.transform.localPosition = new Vector3(-inputBlockExtents.x, 0f, 0f);
-                    inputBlock.transform.localScale = Vector3.one;
-                    List<Edge> inEdges = new List<Edge>(graph.InEdges(vertex));
-                    for (int portIndex = 0; portIndex < inEdges.Count; portIndex++)
-                    {
-                        InputPort port = inEdges[portIndex].Source.Chunk as InputPort;
-                        GameObject input = Instantiate(InputPrefab);
-                        input.GetComponentInChildren<TextMesh>().text = port.DefaultName;
-                        input.transform.SetParent(inputBlock.transform.Find("Input Spot"));
-                        input.transform.localPosition = Vector3.zero;
-                        input.transform.localPosition =
-                            new Vector3(0f, 0f, 1 - (portIndex + 1f) / (inEdges.Count + 1)); //n/n+1
-
-                        Transform sphere = input.transform.Find("Sphere");
-                        sphere.name = port.Guid.ToString();
-                        input.transform.localScale = Vector3.one;
-                    }
-
-                    GameObject outputBlock = Instantiate(OutputBlockPrefab);
-                    outputBlock.transform.SetParent(cube.transform.Find("OutputBlockSpot"));
-                    Vector3 outputBlockExtents = outputBlock.GetComponentInChildren<Renderer>().bounds.extents;
-                    outputBlock.transform.localPosition = new Vector3(outputBlockExtents.x, 0f, 0f);
-                    outputBlock.transform.localScale = Vector3.one;
-                    List<Edge> outEdges = new List<Edge>(graph.OutEdges(vertex));
-                    for (int portIndex = 0; portIndex < outEdges.Count; portIndex++)
-                    {
-                        OutputPort port = outEdges[portIndex].Target.Chunk as OutputPort;
-                        GameObject output = Instantiate(OutputPrefab);
-                        output.GetComponentInChildren<TextMesh>().text = port.DefaultName;
-                        output.transform.SetParent(outputBlock.transform.Find("Output Spot"));
-                        output.transform.localPosition = Vector3.zero;
-                        output.transform.localPosition =
-                            new Vector3(0f, 0f, 1 - (portIndex + 1f) / (outEdges.Count + 1)); //n/n+1
-                        output.transform.localScale = Vector3.one;
-                        Transform sphere = output.transform.Find("Sphere");
-                        sphere.name = port.Guid.ToString();
-                    }
-                }
-
-                GameObject testCube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                testCube.transform.name = "TestCollider";
-                testCube.transform.SetParent(cube.transform);
-                testCube.transform.localScale = Vector3.one;
-                testCube.transform.localPosition = Vector3.zero;
-            }
+            AddComponent(drawingSurface, vertex, bottomLeft, modelBounds, dimensions, topRight, graph);
         }
 
         RefreshEdges(graph);
@@ -296,6 +221,79 @@ public class GHModelManager : Singleton<GHModelManager>
         StartCoroutine(SetGroupOutlines(lines, 1f)); //in case the following line throws an NPE
         //(happens when the VR setup did not have enough time to be initialized)
         //LineDrawer.Instance.Lines = lines;
+    }
+
+    private void AddComponent(Transform drawingSurface, Vertex vertex, Vector3 bottomLeft, RectangleF modelBounds,
+        Vector3 dimensions, Vector3 topRight, BidirectionalGraph<Vertex, Edge> graph)
+    {
+        Component component = vertex.Chunk as Component;
+        if (component != null)
+        {
+            GameObject cube = Instantiate(ComponentPrefab, drawingSurface, true);
+            cube.name = component.Guid.ToString();
+            cube.AddComponent<InteractableVertex>().Vertex = vertex;
+            Text textComponent = cube.GetComponentInChildren<Text>();
+
+            textComponent.text =
+                string.IsNullOrEmpty(component.Nickname)
+                    ? component.DefaultName
+                    : component.Nickname;
+            cube.transform.position = new Vector3(
+                bottomLeft.x + (component.VisualBounds.X - modelBounds.X + component.VisualBounds.Width / 2f) /
+                modelBounds.Width * dimensions.x,
+                drawingSurface.transform.position.y + .03f,
+                topRight.z - (component.VisualBounds.Y - modelBounds.Y + component.VisualBounds.Height / 2f) /
+                modelBounds.Height * dimensions.z);
+
+            SetScaleWithDimensions(cube.transform, component.VisualBounds.Width / modelBounds.Width,
+                component.VisualBounds.Height / modelBounds.Height);
+
+            if (component is IoComponent)
+            {
+                textComponent.transform.Rotate(0, 0, 90f);
+
+                GameObject inputBlock = Instantiate(InputBlockPrefab, cube.transform.Find("InputBlockSpot"), true);
+                Vector3 inputBlockExtents = inputBlock.GetComponentInChildren<Renderer>().bounds.extents;
+                inputBlock.transform.localPosition = new Vector3(-inputBlockExtents.x, 0f, 0f);
+                inputBlock.transform.localScale = Vector3.one;
+                List<Edge> inEdges = new List<Edge>(graph.InEdges(vertex));
+                for (int portIndex = 0; portIndex < inEdges.Count; portIndex++)
+                {
+                    InputPort port = inEdges[portIndex].Source.Chunk as InputPort;
+                    GameObject input = Instantiate(InputPrefab, inputBlock.transform.Find("Input Spot"), true);
+                    input.GetComponentInChildren<TextMesh>().text = port.DefaultName;
+                    input.transform.localPosition =
+                        new Vector3(0f, 0f, 1 - (portIndex + 1f) / (inEdges.Count + 1)); //n/n+1
+
+                    Transform sphere = input.transform.Find("Sphere");
+                    sphere.name = port.Guid.ToString();
+                    input.transform.localScale = Vector3.one;
+                }
+
+                GameObject outputBlock = Instantiate(OutputBlockPrefab, cube.transform.Find("OutputBlockSpot"), true);
+                Vector3 outputBlockExtents = outputBlock.GetComponentInChildren<Renderer>().bounds.extents;
+                outputBlock.transform.localPosition = new Vector3(outputBlockExtents.x, 0f, 0f);
+                outputBlock.transform.localScale = Vector3.one;
+                List<Edge> outEdges = new List<Edge>(graph.OutEdges(vertex));
+                for (int portIndex = 0; portIndex < outEdges.Count; portIndex++)
+                {
+                    OutputPort port = outEdges[portIndex].Target.Chunk as OutputPort;
+                    GameObject output = Instantiate(OutputPrefab, outputBlock.transform.Find("Output Spot"), true);
+                    output.GetComponentInChildren<TextMesh>().text = port.DefaultName;
+                    output.transform.localPosition =
+                        new Vector3(0f, 0f, 1 - (portIndex + 1f) / (outEdges.Count + 1)); //n/n+1
+                    output.transform.localScale = Vector3.one;
+                    Transform sphere = output.transform.Find("Sphere");
+                    sphere.name = port.Guid.ToString();
+                }
+            }
+
+            GameObject testCube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            testCube.transform.name = "TestCollider";
+            testCube.transform.SetParent(cube.transform);
+            testCube.transform.localScale = Vector3.one;
+            testCube.transform.localPosition = Vector3.zero;
+        }
     }
 
     public void RefreshEdges()
