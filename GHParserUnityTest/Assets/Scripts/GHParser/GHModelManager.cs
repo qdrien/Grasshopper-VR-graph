@@ -34,6 +34,7 @@ public class GHModelManager : Singleton<GHModelManager>
     public Transform LinesContainer;
     public GameObject OutputBlockPrefab;
     public GameObject OutputPrefab;
+    public GameObject PlaceHolderComponentPrefab;
     public string RelativePath = "/GH files/test.ghx";
 
     private void Start()
@@ -69,7 +70,7 @@ public class GHModelManager : Singleton<GHModelManager>
         }
 
         RefreshEdges(graph);
-
+        
         OrderedDictionary orderedGroups = ParametricModel.OrderGroupsWithDepth(groups);
         List<Vector3> lines = new List<Vector3>(orderedGroups.Count * 24);
         foreach (Group group in orderedGroups.Keys)
@@ -302,47 +303,39 @@ public class GHModelManager : Singleton<GHModelManager>
         BidirectionalGraph<Vertex,Edge> graph = _parametricModel.Graph;
         RefreshEdges(graph);
     }
-    
-    public void AddIOComponent(string componentName)
-    {
-        Debug.Log(componentName + " component attached to the controller.");
-    }
 
-    public void AddIOComponent(string componentName, Vector3 position)
+    //Following 2 methods are probably unnecessary since we can parse the input value
+    /*public void AttachComponent(string componentName, string type, float value)
     {
-        Debug.Log(componentName + " component added at position "+ position +".");
+        
     }
     
-    public void AddSliderComponent(string componentName, float value)
+    public void AttachComponent(string componentName, string type, bool value)
     {
-        Debug.Log(componentName + " slider component attached to the controller with value "+ value +".");
-    }
-
-    public void AddSliderComponent(string componentName, float value, Vector3 position)
+        
+    }*/
+    
+    public void AttachComponent(string componentName, string type, string value)
     {
-        Debug.Log(componentName + " slider component added at position "+ position +"with value "+ value +".");
-    }
-
-    public void AddBooleanComponent(string componentName, bool value)
-    {
-        Debug.Log(componentName + " boolean component attached to the controller with value "+ value +".");
-    }
-
-    public void AddBooleanComponent(string componentName, bool value, Vector3 position)
-    {
-        Debug.Log(componentName + " boolean component added at position "+ position +"with value "+ value +".");
+        //TODO: should verify first that parameters are valid
+        
+        //value could also be a slider configuration (value but also number of digits, etc)
+        GameObject newComponent = Instantiate(PlaceHolderComponentPrefab, DrawingSurface);
+        newComponent.GetComponentInChildren<Text>().text = componentName;
+        
+        //TODO: actually attach this to the controller
     }
     
-    public void AddPanelComponent(string componentName, string value)
+    public void AttachComponent(string componentName, string type)
     {
-        Debug.Log(componentName + " panel component attached to the controller with value "+ value +".");
+        //TODO: should verify first that parameters are valid
+
+        GameObject newComponent = Instantiate(PlaceHolderComponentPrefab, DrawingSurface);
+        newComponent.GetComponentInChildren<Text>().text = componentName;
+        
+        //TODO: actually attach this to the controller
     }
 
-    public void AddPanelComponent(string componentName, string value, Vector3 position)
-    {
-        Debug.Log(componentName + " panel component added at position "+ position +"with value "+ value +".");
-    }
-    
     /// <summary>
     /// Selective removal of edges related to a specific vertex.
     /// (only this vertex's edges and its ports' edges if this is an IOComponent)

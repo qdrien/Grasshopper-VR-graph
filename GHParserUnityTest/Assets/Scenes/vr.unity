@@ -3607,6 +3607,8 @@ MonoBehaviour:
     type: 2}
   OutputPrefab: {fileID: 1113319330040306, guid: fa8277ed6b8791d49a156c0dbbd17b83,
     type: 2}
+  PlaceHolderComponentPrefab: {fileID: 1274589886976808, guid: d502eb7984549d345bedfa5778cde226,
+    type: 2}
   RelativePath: /GH files/test-simplified.ghx
 --- !u!4 &881049327
 Transform:
