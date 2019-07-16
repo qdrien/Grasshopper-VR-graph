@@ -318,7 +318,7 @@ public class GHModelManager : Singleton<GHModelManager>
     public void AttachComponent(string componentName, string type, string value)
     {
         //TODO: should verify first that parameters are valid
-        
+
         //value could also be a slider configuration (value but also number of digits, etc)
         GameObject newComponent = Instantiate(PlaceHolderComponentPrefab, DrawingSurface);
         newComponent.GetComponentInChildren<Text>().text = componentName;
