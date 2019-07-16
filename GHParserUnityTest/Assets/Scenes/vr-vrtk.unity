@@ -3585,6 +3585,12 @@ Prefab:
       propertyPath: LinesContainer
       value: 
       objectReference: {fileID: 344829412}
+    - target: {fileID: 114135483739203424, guid: e43ecbed6be7bf6438c65dedc3426f4b,
+        type: 2}
+      propertyPath: PlaceHolderComponentPrefab
+      value: 
+      objectReference: {fileID: 1722196842043116, guid: 034895430761a0149a97ddefb8b067d7,
+        type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: e43ecbed6be7bf6438c65dedc3426f4b, type: 2}
   m_IsPrefabParent: 0
@@ -4720,6 +4726,7 @@ GameObject:
   - component: {fileID: 1408711854}
   - component: {fileID: 1408711853}
   - component: {fileID: 1408711855}
+  - component: {fileID: 1408711856}
   m_Layer: 0
   m_Name: LeftControllerScriptAlias
   m_TagString: Untagged
@@ -4902,6 +4909,27 @@ MonoBehaviour:
   controllerEvents: {fileID: 0}
   interactTouch: {fileID: 0}
   interactGrab: {fileID: 0}
+--- !u!114 &1408711856
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1408711848}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 58cdac96da703d7488a11cc3bde08cbd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  objectToGrab: {fileID: 114892732172492716, guid: 034895430761a0149a97ddefb8b067d7,
+    type: 2}
+  objectIsPrefab: 1
+  cloneGrabbedObject: 1
+  alwaysCloneOnEnable: 0
+  attemptSecondaryGrab: 0
+  interactTouch: {fileID: 0}
+  interactGrab: {fileID: 0}
+  secondaryInteractTouch: {fileID: 0}
+  secondaryInteractGrab: {fileID: 0}
 --- !u!1 &1414072373
 GameObject:
   m_ObjectHideFlags: 0

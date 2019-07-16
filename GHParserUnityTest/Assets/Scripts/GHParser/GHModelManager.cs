@@ -14,6 +14,7 @@ using QuickGraph;
 using UnityEngine;
 using UnityEngine.UI;
 using Valve.VR;
+using VRTK;
 using Color = UnityEngine.Color;
 using Component = GHParser.GHElements.Component;
 
@@ -317,23 +318,39 @@ public class GHModelManager : Singleton<GHModelManager>
     
     public void AttachComponent(string componentName, string type, string value)
     {
-        //TODO: should verify first that parameters are valid
-
-        //value could also be a slider configuration (value but also number of digits, etc)
-        GameObject newComponent = Instantiate(PlaceHolderComponentPrefab, DrawingSurface);
-        newComponent.GetComponentInChildren<Text>().text = componentName;
+        GameObject leftControllerAlias = VRTK_DeviceFinder.GetControllerLeftHand();
+        Debug.Log(leftControllerAlias.name);
         
-        //TODO: actually attach this to the controller
+        leftControllerAlias.GetComponent<VRTK_ObjectAutoGrab>().enabled = true;
+
+        StartCoroutine(PopulatePlaceHolder(componentName, type, value));
     }
-    
+
+    private IEnumerator PopulatePlaceHolder(string componentName, string type, string value)
+    {
+        //TODO: this should directly create the actual Component
+        
+        yield return new WaitForEndOfFrame();
+        
+        //TODO: should verify first that parameters are valid
+        //value could also be a slider configuration (value but also number of digits, etc)
+        
+        Transform placeholderComponent = VRTK_DeviceFinder.
+            GetControllerLeftHand().GetComponent<VRTK_InteractGrab>().controllerAttachPoint.transform.GetChild(0);
+        Debug.Log(placeholderComponent.name);
+        placeholderComponent.GetComponentInChildren<Text>().text = componentName;
+    }
+
     public void AttachComponent(string componentName, string type)
     {
         //TODO: should verify first that parameters are valid
 
-        GameObject newComponent = Instantiate(PlaceHolderComponentPrefab, DrawingSurface);
-        newComponent.GetComponentInChildren<Text>().text = componentName;
-        
+        /*GameObject newComponent = Instantiate(PlaceHolderComponentPrefab, DrawingSurface);
+        newComponent.GetComponentInChildren<Text>().text = componentName;*/
+
         //TODO: actually attach this to the controller
+        
+        
     }
 
     /// <summary>
@@ -548,6 +565,11 @@ public class GHModelManager : Singleton<GHModelManager>
 
     private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.A)) //TODO: remove this
+        {
+            AttachComponent("testname", "testtype", "testvalue"); 
+        }
+        
         if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1))
         {
             RaycastHit hit;
