@@ -56,7 +56,7 @@ public class UngrabComponentHandler : MonoBehaviour {
 		else
 		{
 			transform.position = new Vector3(transform.position.x, GHModelManager.Instance.DrawingSurface.position.y + .06f, transform.position.z);
-			GHModelManager.Instance.RefreshEdges(interactableVertex.Vertex);
+			GHModelManager.Instance.MoveVertex(interactableVertex.Vertex, transform.position);
 		}
 	}
 }

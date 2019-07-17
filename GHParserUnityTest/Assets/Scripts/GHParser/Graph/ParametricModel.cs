@@ -92,6 +92,8 @@ namespace GHParser.Graph
             definitionObjects.SetInt32("ObjectCount", currentObjectIndex);
 
             archive.WriteToFile(Application.dataPath + relativePath, true, false);
+            
+            Debug.Log("Saved to file " + relativePath);
         }
 
         public void LoadFromGrasshopper(string relativePath)
@@ -580,6 +582,11 @@ namespace GHParser.Graph
             Debug.Log(toPrint.ToString());
 
             return orderedGroups;
+        }
+
+        public void RemoveVertex(Vertex vertex)
+        {
+            Graph.RemoveVertex(vertex);
         }
     }
 }

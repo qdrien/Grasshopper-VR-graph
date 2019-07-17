@@ -59,12 +59,6 @@ public class GHModelManager : Singleton<GHModelManager>
         RectangleF modelBounds = parametricModel.FindBounds();
         Debug.Log("Bounds in the model coordinate system: " + modelBounds);
 
-        /*
-        bl.x + ((c.x - m.x) / m.w) * d.x
-        tr.z + ((c.y - m.y) / m.h) * d.z
-         
-         */
-
         foreach (Vertex vertex in graph.Vertices)
         {
             AddComponent(drawingSurface, vertex, bottomLeft, modelBounds, dimensions, topRight, graph);
@@ -240,9 +234,16 @@ public class GHModelManager : Singleton<GHModelManager>
                 string.IsNullOrEmpty(component.Nickname)
                     ? component.DefaultName
                     : component.Nickname;
+            
+            /* 
+            bl.x + ((c.x - m.x) / m.w) * d.x
+            tr.z + ((c.y - m.y) / m.h) * d.z
+         
+            */
+            
             cube.transform.position = new Vector3(
-                bottomLeft.x + (component.VisualBounds.X - modelBounds.X + component.VisualBounds.Width / 2f) /
-                modelBounds.Width * dimensions.x,
+                bottomLeft.x + ((component.VisualBounds.X - modelBounds.X + component.VisualBounds.Width / 2f) /
+                modelBounds.Width) * dimensions.x,
                 drawingSurface.transform.position.y + .03f,
                 topRight.z - (component.VisualBounds.Y - modelBounds.Y + component.VisualBounds.Height / 2f) /
                 modelBounds.Height * dimensions.z);
@@ -864,8 +865,7 @@ public class GHModelManager : Singleton<GHModelManager>
 
     public void RemoveVertex(Vertex vertex)
     {
-        _parametricModel.Graph.RemoveVertex(vertex);
-        //should probably call _parametricModel.SaveToGrasshopper("/GH files/whatever.ghx");
+        _parametricModel.RemoveVertex(vertex);
         RemoveEdges(vertex);
     }
 
@@ -881,5 +881,30 @@ public class GHModelManager : Singleton<GHModelManager>
 
         Material white = new Material(Shader.Find("Unlit/Color")) {color = Color.white};
         AddLine(new Guid(start.name), new Guid(end.name), white, Easings.Functions.HermiteEaseInOut);
+    }
+
+    public void MoveVertex(Vertex vertex, Vector3 position)
+    {
+        List<Group> groups = _parametricModel.Groups; //todo: should recalculate the groups as well
+
+        Bounds drawingSurfaceBounds = DrawingSurface.GetComponent<Renderer>().bounds;
+
+        Vector3 dimensions = drawingSurfaceBounds.extents * 2;
+        Vector3 bottomLeft = drawingSurfaceBounds.min;
+        Vector3 topRight = drawingSurfaceBounds.max;
+
+        RectangleF modelBounds = _parametricModel.FindBounds();
+        
+        Component component = vertex.Chunk as Component;
+        if (component != null)
+        {
+            component.VisualBounds = new RectangleF(
+                ((position.x - bottomLeft.x) / dimensions.x) * modelBounds.Width + modelBounds.X - component.VisualBounds.Width/2f, 
+                -((position.z - topRight.z) / dimensions.z) * modelBounds.Height + modelBounds.Y - component.VisualBounds.Height/2f,
+                component.VisualBounds.Width,
+                component.VisualBounds.Height);
+        }
+
+        RefreshEdges(vertex);
     }
 }
