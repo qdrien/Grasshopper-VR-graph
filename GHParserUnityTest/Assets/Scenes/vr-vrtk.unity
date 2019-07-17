@@ -246,8 +246,8 @@ GameObject:
   - component: {fileID: 109582314}
   - component: {fileID: 109582317}
   - component: {fileID: 109582316}
-  - component: {fileID: 109582318}
   - component: {fileID: 109582319}
+  - component: {fileID: 109582318}
   m_Layer: 0
   m_Name: RightControllerScriptAlias
   m_TagString: Untagged
@@ -423,13 +423,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 109582311}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 65eb64f0f2fd6d64faddbcf5d7d3bdbb, type: 3}
+  m_Script: {fileID: 11500000, guid: ae681468053b9584fa07df04cb11a42e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   useButton: 3
   controllerEvents: {fileID: 0}
   interactTouch: {fileID: 0}
   interactGrab: {fileID: 0}
+  SimpleLinePrefab: {fileID: 1195817108505340, guid: 073da772c35f0c648be57b1a1140a727,
+    type: 2}
 --- !u!114 &109582319
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4923,13 +4925,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 1408711848}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 65eb64f0f2fd6d64faddbcf5d7d3bdbb, type: 3}
+  m_Script: {fileID: 11500000, guid: ae681468053b9584fa07df04cb11a42e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   useButton: 3
   controllerEvents: {fileID: 0}
   interactTouch: {fileID: 0}
   interactGrab: {fileID: 0}
+  SimpleLinePrefab: {fileID: 1195817108505340, guid: 073da772c35f0c648be57b1a1140a727,
+    type: 2}
 --- !u!1 &1414072373
 GameObject:
   m_ObjectHideFlags: 0

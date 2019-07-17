@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.IO;
 using System.Text;
 using GHParser.GHElements;
@@ -416,6 +417,43 @@ namespace GHParser.Graph
 
             output.Append("\n}");
             return output.ToString();
+        }
+
+        public bool AddEdge(string start, string end)
+        {
+            Vertex startVertex = null, endVertex = null;
+            
+            foreach (Vertex vertex in Graph.Vertices)
+            {
+                if (vertex.Chunk.Guid.ToString().Equals(start)) startVertex = vertex;
+                else if (vertex.Chunk.Guid.ToString().Equals(end)) endVertex = vertex;
+
+                if (startVertex != null && endVertex != null)
+                    break;
+            }
+
+            if (startVertex == null || endVertex == null)
+            {
+                Debug.LogError("Can't find one of the 2 vertices, can't add the edge.");
+                return false;
+            }
+            
+            Edge newEdge = new Edge
+            {
+                Source = startVertex,
+                Target = endVertex
+            };
+            
+            Graph.AddEdge(newEdge);
+
+            if (!Graph.IsDirectedAcyclicGraph())
+            {
+                Debug.LogError("This would introduce a cycle.");
+                Graph.RemoveEdge(newEdge);
+                return false;
+            }
+
+            return true;
         }
 
         public bool RemoveEdge(string edgeName)

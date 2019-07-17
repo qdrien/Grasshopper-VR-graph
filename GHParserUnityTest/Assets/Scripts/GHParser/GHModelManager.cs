@@ -289,6 +289,59 @@ public class GHModelManager : Singleton<GHModelManager>
                     sphere.name = port.Guid.ToString();
                 }
             }
+            //"only used as input" components
+            else if (component is NumberSliderComponent || component is BooleanToggleComponent)
+            {
+                GameObject outputBlock = Instantiate(OutputBlockPrefab, cube.transform.Find("OutputBlockSpot"), true);
+                Vector3 outputBlockExtents = outputBlock.GetComponentInChildren<Renderer>().bounds.extents;
+                outputBlock.transform.localPosition = new Vector3(outputBlockExtents.x, 0f, 0f);
+                outputBlock.transform.localScale = Vector3.one;
+                
+                GameObject output = Instantiate(OutputPrefab, outputBlock.transform.Find("Output Spot"), true);
+                output.GetComponentInChildren<TextMesh>().text = "";
+                output.transform.localPosition = new Vector3(0f, 0f, .5f); //n/n+1
+                
+                Transform sphere = output.transform.Find("Sphere");
+                sphere.name = cube.name;
+                output.transform.localScale = Vector3.one;
+                sphere.transform.localScale = new Vector3(sphere.transform.localScale.x, sphere.transform.localScale.y, .5f);
+            }
+            //"only used as output" components
+            //uncomment and code the following if any of those gets used (e.g. cluster output, galapagos?)
+            /*else if (component is <class here>)
+            {
+                
+            }*/
+            //"input/output" components
+            else if (component is PanelComponent)
+            {
+                GameObject inputBlock = Instantiate(InputBlockPrefab, cube.transform.Find("InputBlockSpot"), true);
+                Vector3 inputBlockExtents = inputBlock.GetComponentInChildren<Renderer>().bounds.extents;
+                inputBlock.transform.localPosition = new Vector3(-inputBlockExtents.x, 0f, 0f);
+                inputBlock.transform.localScale = Vector3.one;
+                
+                GameObject input = Instantiate(InputPrefab, inputBlock.transform.Find("Input Spot"), true);
+                input.GetComponentInChildren<TextMesh>().text = "";
+                input.transform.localPosition = new Vector3(0f, 0f, .5f);
+
+                Transform sphere = input.transform.Find("Sphere");
+                sphere.name = cube.name;
+                input.transform.localScale = Vector3.one;
+                
+                
+                GameObject outputBlock = Instantiate(OutputBlockPrefab, cube.transform.Find("OutputBlockSpot"), true);
+                Vector3 outputBlockExtents = outputBlock.GetComponentInChildren<Renderer>().bounds.extents;
+                outputBlock.transform.localPosition = new Vector3(outputBlockExtents.x, 0f, 0f);
+                outputBlock.transform.localScale = Vector3.one;
+                
+                GameObject output = Instantiate(OutputPrefab, outputBlock.transform.Find("Output Spot"), true);
+                output.GetComponentInChildren<TextMesh>().text = "";
+                output.transform.localPosition = new Vector3(0f, 0f, .5f);
+                
+                Transform sphere2 = output.transform.Find("Sphere");
+                sphere2.name = cube.name;
+                output.transform.localScale = Vector3.one;
+            }
 
             GameObject testCube = GameObject.CreatePrimitive(PrimitiveType.Cube);
             testCube.transform.name = "TestCollider";
@@ -814,5 +867,19 @@ public class GHModelManager : Singleton<GHModelManager>
         _parametricModel.Graph.RemoveVertex(vertex);
         //should probably call _parametricModel.SaveToGrasshopper("/GH files/whatever.ghx");
         RemoveEdges(vertex);
+    }
+
+    public void AddEdge(GameObject start, GameObject end)
+    {
+        Debug.Log("would create an edge from " + start.name + " to " + end.name);
+        bool wasValid = _parametricModel.AddEdge(start.name, end.name);
+        if (!wasValid)
+        {
+            Debug.LogError("Could not add the edge, the parametric model refused it (e.g. because both ports are from the same component).");
+            return;
+        }
+
+        Material white = new Material(Shader.Find("Unlit/Color")) {color = Color.white};
+        AddLine(new Guid(start.name), new Guid(end.name), white, Easings.Functions.HermiteEaseInOut);
     }
 }
