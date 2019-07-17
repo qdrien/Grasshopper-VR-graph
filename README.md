@@ -14,3 +14,4 @@ Goals:
   - Move the viewpoint (what part of the graph we currently see)
   - Scale the viewpoint (zoom in/out in the graph)
   - Add/remove/"resize" group?
+- For controller-based interaction, should try with different controller models (e.g. something like a stick would be easier to handle for touching/grabbinb things)
