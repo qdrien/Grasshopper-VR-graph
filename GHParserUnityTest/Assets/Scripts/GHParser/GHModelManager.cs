@@ -318,10 +318,10 @@ public class GHModelManager : Singleton<GHModelManager>
     
     public void AttachComponent(string componentName, string type, string value)
     {
-        GameObject leftControllerAlias = VRTK_DeviceFinder.GetControllerLeftHand();
-        Debug.Log(leftControllerAlias.name);
+        GameObject rightControllerAlias = VRTK_DeviceFinder.GetControllerRightHand();
+        Debug.Log(rightControllerAlias.name);
         
-        leftControllerAlias.GetComponent<VRTK_ObjectAutoGrab>().enabled = true;
+        rightControllerAlias.GetComponent<VRTK_ObjectAutoGrab>().enabled = true;
 
         StartCoroutine(PopulatePlaceHolder(componentName, type, value));
     }
@@ -336,7 +336,7 @@ public class GHModelManager : Singleton<GHModelManager>
         //value could also be a slider configuration (value but also number of digits, etc)
         
         Transform placeholderComponent = VRTK_DeviceFinder.
-            GetControllerLeftHand().GetComponent<VRTK_InteractGrab>().controllerAttachPoint.transform.GetChild(0);
+            GetControllerRightHand().GetComponent<VRTK_InteractGrab>().controllerAttachPoint.transform.GetChild(0);
         Debug.Log(placeholderComponent.name);
         placeholderComponent.GetComponentInChildren<Text>().text = componentName;
     }

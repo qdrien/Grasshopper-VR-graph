@@ -21,6 +21,6 @@ public class UngrabPlaceholderHandler : MonoBehaviour {
 		//TODO: should probably clone the object here
 		//TODO: attach it to the drawingsurface
 		
-		VRTK_DeviceFinder.GetControllerLeftHand().GetComponent<VRTK_ObjectAutoGrab>().enabled = false;
+		VRTK_DeviceFinder.GetControllerRightHand().GetComponent<VRTK_ObjectAutoGrab>().enabled = false;
 	}
 }
