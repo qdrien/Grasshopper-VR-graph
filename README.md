@@ -4,6 +4,8 @@ Version of Unity used: 2018.1.9f2
 
 Goals:    
 - Bring GH graphs into VR (e.g. table metaphor)
+  - What is the optimal size/height of the table?
+  - What about the font?
 - Capitalize on the 3rd dimension for an alternative visualization (e.g. z axis linked to how deep we are in the graph)
 - Enable graph editing and try different interaction options for the following actions:
   - Add a component (a node in the graph)
