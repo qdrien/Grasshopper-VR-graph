@@ -246,7 +246,6 @@ GameObject:
   - component: {fileID: 109582314}
   - component: {fileID: 109582317}
   - component: {fileID: 109582316}
-  - component: {fileID: 109582319}
   - component: {fileID: 109582318}
   m_Layer: 0
   m_Name: RightControllerScriptAlias
@@ -432,27 +431,6 @@ MonoBehaviour:
   interactGrab: {fileID: 0}
   SimpleLinePrefab: {fileID: 1195817108505340, guid: 073da772c35f0c648be57b1a1140a727,
     type: 2}
---- !u!114 &109582319
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 109582311}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 58cdac96da703d7488a11cc3bde08cbd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  objectToGrab: {fileID: 114892732172492716, guid: 034895430761a0149a97ddefb8b067d7,
-    type: 2}
-  objectIsPrefab: 1
-  cloneGrabbedObject: 1
-  alwaysCloneOnEnable: 0
-  attemptSecondaryGrab: 0
-  interactTouch: {fileID: 0}
-  interactGrab: {fileID: 0}
-  secondaryInteractTouch: {fileID: 0}
-  secondaryInteractGrab: {fileID: 0}
 --- !u!1 &136028232
 GameObject:
   m_ObjectHideFlags: 0

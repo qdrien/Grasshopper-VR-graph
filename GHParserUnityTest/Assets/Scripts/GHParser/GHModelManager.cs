@@ -36,7 +36,6 @@ public class GHModelManager : Singleton<GHModelManager>
     public Transform LinesContainer;
     public GameObject OutputBlockPrefab;
     public GameObject OutputPrefab;
-    public GameObject PlaceHolderComponentPrefab;
     public string RelativePath = "/GH files/test.ghx";
     public string ComponentTemplatesFile;
 
@@ -384,11 +383,7 @@ public class GHModelManager : Singleton<GHModelManager>
         GameObject rightControllerAlias = VRTK_DeviceFinder.GetControllerRightHand();
         Debug.Log(rightControllerAlias.name);
         
-        //rightControllerAlias.GetComponent<VRTK_ObjectAutoGrab>().enabled = true;
-
         StartCoroutine(AttachTemplateComponent(componentName, type, value));
-
-        //StartCoroutine(PopulatePlaceHolder(componentName, type, value));
     }
 
     private IEnumerator AttachTemplateComponent(string componentName, string type, string value)
@@ -462,21 +457,6 @@ public class GHModelManager : Singleton<GHModelManager>
             _parametricModel.Graph);
 
         return newComponent;
-    }
-
-    private IEnumerator PopulatePlaceHolder(string componentName, string type, string value)
-    {
-        //TODO: this should directly create the actual Component
-        
-        yield return new WaitForEndOfFrame();
-        
-        //TODO: should verify first that parameters are valid
-        //value could also be a slider configuration (value but also number of digits, etc)
-        
-        Transform placeholderComponent = VRTK_DeviceFinder.
-            GetControllerRightHand().GetComponent<VRTK_InteractGrab>().controllerAttachPoint.transform.GetChild(0);
-        Debug.Log(placeholderComponent.name);
-        placeholderComponent.GetComponentInChildren<Text>().text = componentName;
     }
 
     public void AttachComponent(string componentName, string type)
