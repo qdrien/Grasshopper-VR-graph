@@ -11,6 +11,7 @@ public class IoComponentTemplate
 	private Guid _typeGuid;
 	private string _typeName;
 	private RectangleF _visualBounds;
+	private string _nickname;
 
 	private List<InputPort> _inputPorts;
 	private List<OutputPort> _outputPorts;
@@ -39,6 +40,12 @@ public class IoComponentTemplate
 		set { _visualBounds = value; }
 	}
 
+	public string Nickname
+	{
+		get { return _nickname; }
+		set { _nickname = value; }
+	}
+
 	public List<InputPort> InputPorts
 	{
 		get { return _inputPorts; }
@@ -51,7 +58,7 @@ public class IoComponentTemplate
 		set { _outputPorts = value; }
 	}
 
-	public IoComponentTemplate(string defaultName, Guid typeGuid, string typeName, RectangleF visualBounds, List<InputPort> inputPorts, List<OutputPort> outputPorts)
+	public IoComponentTemplate(string defaultName, Guid typeGuid, string typeName, RectangleF visualBounds, string nickname, List<InputPort> inputPorts, List<OutputPort> outputPorts)
 	{
 		_defaultName = defaultName;
 		_typeGuid = typeGuid;
@@ -59,6 +66,7 @@ public class IoComponentTemplate
 		_visualBounds = visualBounds;
 		_inputPorts = inputPorts;
 		_outputPorts = outputPorts;
+		_nickname = nickname;
 	}
 
 	public override string ToString()

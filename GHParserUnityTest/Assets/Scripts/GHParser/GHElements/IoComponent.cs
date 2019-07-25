@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using GHParser.Graph;
 using GH_IO.Serialization;
 using QuickGraph;
@@ -56,6 +57,11 @@ namespace GHParser.GHElements
                     edges.Add(new[] {Guid, outputPort.Guid});
                 }
             }
+        }
+
+        public IoComponent(string defaultName, Guid typeGuid, string typeName, RectangleF visualBounds, Guid instanceGuid, string nickname) : base(defaultName, typeGuid, typeName, visualBounds, instanceGuid, nickname)
+        {
+            
         }
 
         /*public override string ToString()

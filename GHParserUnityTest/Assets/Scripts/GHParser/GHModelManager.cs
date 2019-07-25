@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Linq;
 using System.Text;
 using GHParser.GHElements;
 using GHParser.Graph;
@@ -221,7 +222,7 @@ public class GHModelManager : Singleton<GHModelManager>
         //LineDrawer.Instance.Lines = lines;
     }
 
-    private void AddComponent(Transform drawingSurface, Vertex vertex, Vector3 bottomLeft, RectangleF modelBounds,
+    private GameObject AddComponent(Transform drawingSurface, Vertex vertex, Vector3 bottomLeft, RectangleF modelBounds,
         Vector3 dimensions, Vector3 topRight, BidirectionalGraph<Vertex, Edge> graph)
     {
         Component component = vertex.Chunk as Component;
@@ -351,7 +352,11 @@ public class GHModelManager : Singleton<GHModelManager>
             testCube.transform.SetParent(cube.transform);
             testCube.transform.localScale = Vector3.one;
             testCube.transform.localPosition = Vector3.zero;
+            
+            
+            return cube;
         }
+        return null;
     }
 
     public void RefreshEdges()
@@ -374,12 +379,80 @@ public class GHModelManager : Singleton<GHModelManager>
     
     public void AttachComponent(string componentName, string type, string value)
     {
+        //TODO: the user could have an object attached already or could have selected a port, should first abort those
+        //if an object is already attached, could also attach this new one to the other controller
         GameObject rightControllerAlias = VRTK_DeviceFinder.GetControllerRightHand();
         Debug.Log(rightControllerAlias.name);
         
-        rightControllerAlias.GetComponent<VRTK_ObjectAutoGrab>().enabled = true;
+        //rightControllerAlias.GetComponent<VRTK_ObjectAutoGrab>().enabled = true;
 
-        StartCoroutine(PopulatePlaceHolder(componentName, type, value));
+        StartCoroutine(AttachTemplateComponent(componentName, type, value));
+
+        //StartCoroutine(PopulatePlaceHolder(componentName, type, value));
+    }
+
+    private IEnumerator AttachTemplateComponent(string componentName, string type, string value)
+    {
+        yield return new WaitForEndOfFrame(); //TODO: this is most likely not necessary anymore, can also change the method's return type
+
+        List<IoComponentTemplate> templates = _parametricModel.ComponentTemplates.FindAll(o => o.TypeName.Equals(type));
+        if (templates.Count <= 0)
+        {
+            Debug.LogError("Did not find a template for type: " + type);
+        }
+        else
+        {
+            if (templates.Count == 1)
+            {
+                IoComponentTemplate template = templates.First();
+                GameObject newComponent = CreateIoComponent(template, componentName, value);
+                //TODO: attach the component here
+            }
+            else
+            {
+                foreach (IoComponentTemplate template in templates)
+                {
+                    //TODO: show a list here and let the user choose
+                    Debug.LogWarning("Multiple components with the same type name were found in the template library, picking the first one.");
+                    IoComponentTemplate firstTemplate = templates.First();
+                    GameObject newComponent = CreateIoComponent(firstTemplate, componentName, value);
+                    //TODO: attach the component here
+                }   
+            }
+        }
+    }
+
+    private GameObject CreateIoComponent(IoComponentTemplate template, string componentName, string value)
+    {
+        Guid instanceGuid = Guid.NewGuid();
+        IoComponent ioComponent = new IoComponent(template.DefaultName, template.TypeGuid, template.TypeName, template.VisualBounds, instanceGuid, template.Nickname);
+        Vertex newVertex = new Vertex(ioComponent);
+        _parametricModel.Graph.AddVertex(newVertex);
+        
+        foreach (InputPort inputPort in template.InputPorts)
+        {
+            InputPort newInputPort = new InputPort(Guid.NewGuid(), inputPort.Nickname, inputPort.DefaultName, inputPort.VisualBounds);
+            _parametricModel.Graph.AddVertex(new Vertex(newInputPort));
+            _parametricModel.AddEdge(newInputPort.Guid.ToString(), instanceGuid.ToString());
+        }
+        
+        foreach (OutputPort outputPort in template.OutputPorts)
+        {
+            OutputPort newOutputPort = new OutputPort(Guid.NewGuid(), outputPort.Nickname, outputPort.DefaultName, outputPort.VisualBounds);
+            _parametricModel.Graph.AddVertex(new Vertex(newOutputPort));
+            _parametricModel.AddEdge(instanceGuid.ToString(), newOutputPort.Guid.ToString());
+        }
+
+        Bounds drawingSurfaceBounds = DrawingSurface.GetComponent<Renderer>().bounds;
+
+        Vector3 dimensions = drawingSurfaceBounds.extents * 2;
+        Vector3 bottomLeft = drawingSurfaceBounds.min;
+        Vector3 topRight = drawingSurfaceBounds.max;
+
+        GameObject newComponent = AddComponent(DrawingSurface, newVertex, bottomLeft, _parametricModel.FindBounds(), dimensions, topRight,
+            _parametricModel.Graph);
+
+        return newComponent;
     }
 
     private IEnumerator PopulatePlaceHolder(string componentName, string type, string value)
@@ -623,7 +696,7 @@ public class GHModelManager : Singleton<GHModelManager>
     {
         if (Input.GetKeyDown(KeyCode.A)) //TODO: remove this
         {
-            AttachComponent("testname", "testtype", "testvalue"); 
+            AttachComponent("testname", "Line", "testvalue"); 
         }
         
         if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1))

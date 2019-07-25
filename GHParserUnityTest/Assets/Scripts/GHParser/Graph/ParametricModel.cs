@@ -29,6 +29,8 @@ namespace GHParser.Graph
         private string _componentTemplateFile = "";
         private List<IoComponentTemplate> _componentTemplates;
 
+        public List<IoComponentTemplate> ComponentTemplates => _componentTemplates;
+
         //QUESTION: do we need those getter/setter? can't we just have the behaviour happen within this class?
         public BidirectionalGraph<Vertex, Edge> Graph { get; set; }
 
@@ -182,9 +184,10 @@ namespace GHParser.Graph
                         OutputPort outputPort = outEdge.Target.Chunk as OutputPort;
                         outputPorts.Add(new OutputPort(Guid.Empty, outputPort.Nickname, outputPort.DefaultName, outputPort.VisualBounds));
                     }
-                        
-                    IoComponentTemplate newTemplate = new IoComponentTemplate(component.DefaultName, component.TypeGuid, component.TypeName, 
-                        component.VisualBounds, inputPorts, outputPorts);
+
+                    IoComponentTemplate newTemplate = new IoComponentTemplate(component.DefaultName, component.TypeGuid,
+                        component.TypeName,
+                        component.VisualBounds, component.Nickname, inputPorts, outputPorts);
                     _componentTemplates.Add(newTemplate);
                     
                     Debug.Log("Learned a new template component: " + newTemplate);
@@ -296,9 +299,10 @@ namespace GHParser.Graph
                 //may want to store the data so that it can be saved later, even though that data is not processed by this tool
                 Debug.LogWarning("Clusters aren't currently supported, ignoring this one.");
             }
-            /*========== IO Component ==========*/
+            /*========== Component ==========*/
             else
             {
+                /*========== IO Component ==========*/
                 if (container.ChunkExists("param_input", 0) || container.ChunkExists("param_output", 0))
                 {
                     new IoComponent(obj, vertices, edges);

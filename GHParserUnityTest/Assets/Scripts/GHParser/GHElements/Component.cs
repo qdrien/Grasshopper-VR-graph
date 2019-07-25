@@ -27,6 +27,16 @@ namespace GHParser.GHElements
             Guid = container.GetGuid("InstanceGuid");
         }
 
+        protected Component(string defaultName, Guid typeGuid, string typeName, RectangleF visualBounds, Guid instanceGuid, string nickname)
+        {
+            _defaultName = defaultName;
+            TypeGuid = typeGuid;
+            TypeName = typeName;
+            VisualBounds = visualBounds;
+            Guid = instanceGuid;
+            Nickname = nickname;
+        }
+
         public Guid TypeGuid { get; set; }
 
         public string TypeName { get; set; }
