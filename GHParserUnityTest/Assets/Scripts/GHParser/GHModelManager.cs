@@ -406,7 +406,16 @@ public class GHModelManager : Singleton<GHModelManager>
             {
                 IoComponentTemplate template = templates.First();
                 GameObject newComponent = CreateIoComponent(template, componentName, value);
-                //TODO: attach the component here
+                
+                GameObject rightControllerAlias = VRTK_DeviceFinder.GetControllerRightHand();
+                VRTK_InteractTouch interactTouch = rightControllerAlias.GetComponent<VRTK_InteractTouch>();
+                VRTK_InteractGrab interactGrab = rightControllerAlias.GetComponent<VRTK_InteractGrab>();
+
+                newComponent.transform.position = rightControllerAlias.transform.position;
+
+                interactTouch.ForceStopTouching();
+                interactTouch.ForceTouch(newComponent);
+                interactGrab.AttemptGrab();
             }
             else
             {
