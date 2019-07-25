@@ -3,6 +3,7 @@ using System.Drawing;
 
 namespace GHParser.GHElements
 {
+    [Serializable]
     public class OutputPort : Port
     {
         public OutputPort(Guid guid, string nickname, string defaultName, RectangleF visualBounds) :

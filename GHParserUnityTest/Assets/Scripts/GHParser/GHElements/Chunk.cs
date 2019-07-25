@@ -8,11 +8,18 @@ using UnityEngine;
 
 namespace GHParser.GHElements
 {
+    [Serializable]
     public abstract class Chunk
     {
+        [NonSerialized]
+        private string _nickname;
         public Guid Guid { get; set; }
 
-        public string Nickname { get; set; }
+        public string Nickname
+        {
+            get { return _nickname; }
+            set { _nickname = value; }
+        }
 
         public override string ToString()
         {

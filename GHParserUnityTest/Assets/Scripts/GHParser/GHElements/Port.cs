@@ -7,6 +7,7 @@ using QuickGraph;
 
 namespace GHParser.GHElements
 {
+    [Serializable]
     public abstract class Port : Chunk
     {
         protected Port(Guid guid, string nickname, string defaultName, RectangleF visualBounds)

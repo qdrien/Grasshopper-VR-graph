@@ -3620,6 +3620,11 @@ Prefab:
       propertyPath: RelativePath
       value: /GH files/test-simplified.ghx
       objectReference: {fileID: 0}
+    - target: {fileID: 114135483739203424, guid: e43ecbed6be7bf6438c65dedc3426f4b,
+        type: 2}
+      propertyPath: ComponentTemplatesFile
+      value: component-templates.ct
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: e43ecbed6be7bf6438c65dedc3426f4b, type: 2}
   m_IsPrefabParent: 0

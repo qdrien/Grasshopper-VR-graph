@@ -37,10 +37,12 @@ public class GHModelManager : Singleton<GHModelManager>
     public GameObject OutputPrefab;
     public GameObject PlaceHolderComponentPrefab;
     public string RelativePath = "/GH files/test.ghx";
+    public string ComponentTemplatesFile;
 
     private void Start()
     {
         _parametricModel = new ParametricModel();
+        _parametricModel.LoadComponentTemplates(ComponentTemplatesFile);
         _parametricModel.LoadFromGrasshopper(RelativePath);
         DrawBasicGraph(DrawingSurface, _parametricModel);
     }

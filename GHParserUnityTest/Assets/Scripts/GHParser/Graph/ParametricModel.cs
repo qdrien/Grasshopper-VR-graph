@@ -5,6 +5,9 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.IO;
+using System.Linq;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using GHParser.GHElements;
 using GHParser.Utils;
@@ -23,6 +26,8 @@ namespace GHParser.Graph
 
         private Guid _documentId;
         public string GHTemplateFile = "/GH files/base.ghx";
+        private string _componentTemplateFile = "";
+        private List<IoComponentTemplate> _componentTemplates;
 
         //QUESTION: do we need those getter/setter? can't we just have the behaviour happen within this class?
         public BidirectionalGraph<Vertex, Edge> Graph { get; set; }
@@ -105,6 +110,8 @@ namespace GHParser.Graph
                 {
                     Debug.LogError("Failed to read the given file.");
                 }
+
+                LearnComponentTemplates();
             }
             catch (FileNotFoundException e)
             {
@@ -112,6 +119,83 @@ namespace GHParser.Graph
                 Console.WriteLine(e);
                 throw;
             }
+        }
+
+        public void LoadComponentTemplates(string templatesFile)
+        {
+            if (string.IsNullOrEmpty(templatesFile))
+            {
+                Debug.LogError("No component templates file given, cannot load templates.");
+            }
+            _componentTemplateFile = templatesFile;
+            _componentTemplates = new List<IoComponentTemplate>();
+
+            FileStream stream;
+            
+            if (!File.Exists(Application.dataPath + "/" + _componentTemplateFile))
+            {
+                stream = File.Create(Application.dataPath + "/" + _componentTemplateFile);
+                stream.Close();
+                return;
+            }
+
+            IFormatter formatter = new BinaryFormatter();
+            stream = new FileStream(Application.dataPath + "/" + _componentTemplateFile, FileMode.Open, FileAccess.Read);
+            if (stream.Length <= 0)
+            {
+                stream.Close();
+                return;
+            }
+            List<IoComponentTemplate> templates = (List<IoComponentTemplate>)formatter.Deserialize(stream);
+            stream.Close();
+
+            foreach (IoComponentTemplate template in templates)
+            {
+                Debug.Log(template);
+                _componentTemplates.Add(template);
+            }
+        }
+
+        private void LearnComponentTemplates()
+        {
+            if (string.IsNullOrEmpty(_componentTemplateFile))
+            {
+                Debug.LogError("No component templates file given, cannot learn templates.");
+            }
+            
+            foreach (Vertex vertex in Graph.Vertices)
+            {
+                IoComponent component = vertex.Chunk as IoComponent;
+                if (component != null && !_componentTemplates.Any(o => o.TypeGuid.Equals(component.TypeGuid)))
+                {
+                    List<InputPort> inputPorts = new List<InputPort>();
+                    List<OutputPort> outputPorts = new List<OutputPort>();
+                        
+                    foreach (Edge inEdge in Graph.InEdges(vertex))
+                    {
+                        InputPort inputPort = inEdge.Source.Chunk as InputPort;
+                        inputPorts.Add(new InputPort(Guid.Empty, inputPort.Nickname, inputPort.DefaultName, inputPort.VisualBounds));
+                    }
+                        
+                    foreach (Edge outEdge in Graph.OutEdges(vertex))
+                    {
+                        OutputPort outputPort = outEdge.Target.Chunk as OutputPort;
+                        outputPorts.Add(new OutputPort(Guid.Empty, outputPort.Nickname, outputPort.DefaultName, outputPort.VisualBounds));
+                    }
+                        
+                    IoComponentTemplate newTemplate = new IoComponentTemplate(component.DefaultName, component.TypeGuid, component.TypeName, 
+                        component.VisualBounds, inputPorts, outputPorts);
+                    _componentTemplates.Add(newTemplate);
+                    
+                    Debug.Log("Learned a new template component: " + newTemplate);
+                }
+            }
+            
+            IFormatter formatter = new BinaryFormatter();
+            Stream stream = new FileStream(Application.dataPath + "/" + _componentTemplateFile, FileMode.Create, FileAccess.Write);
+
+            formatter.Serialize(stream, _componentTemplates);
+            stream.Close();
         }
 
         private bool ReadGHFile(string absolutePath)
@@ -196,6 +280,8 @@ namespace GHParser.Graph
                 return;
             }
 
+            //TODO: other types of components should be handled, e.g. "Addition" does not have the same structure as normal IOC
+            
             /*========== Group ==========*/
             if (GHConstants.Group.Equals(typeGuid))
             {

@@ -4,8 +4,12 @@ using GH_IO.Serialization;
 
 namespace GHParser.GHElements
 {
+    [Serializable]
     public class InputPort : Port
     {
+        [NonSerialized]
+        private GH_Chunk _persistentData;
+
         public InputPort(Guid guid, string nickname, string defaultName, RectangleF visualBounds) :
             base(guid, nickname, defaultName, visualBounds)
         {
@@ -18,7 +22,11 @@ namespace GHParser.GHElements
             PersistentData = persistentData;
         }
 
-        public GH_Chunk PersistentData { get; set; }
+        public GH_Chunk PersistentData
+        {
+            get { return _persistentData; }
+            set { _persistentData = value; }
+        }
 
         public string DefaultNameToGive { get; private set; }
 
