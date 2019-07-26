@@ -55,7 +55,8 @@ public class UngrabComponentHandler : MonoBehaviour {
 		}
 		else
 		{
-			transform.position = new Vector3(transform.position.x, GHModelManager.Instance.DrawingSurface.position.y + .06f, transform.position.z);
+			transform.position = Vector3.ProjectOnPlane(transform.position, GHModelManager.Instance.DrawingSurface.up);
+			transform.position = GHModelManager.Instance.DrawingSurface.TransformPoint(transform.localPosition.x,1,transform.localPosition.z);
 			GHModelManager.Instance.MoveVertex(interactableVertex.Vertex, transform.position);
 		}
 	}

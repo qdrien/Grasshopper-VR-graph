@@ -49,23 +49,26 @@ public class GHModelManager : Singleton<GHModelManager>
 
     private void DrawBasicGraph(Transform drawingSurface, ParametricModel parametricModel)
     {
+        Vector3 bottomLeft = drawingSurface.TransformPoint(new Vector3(-.5f, .5f, -.5f));
+        Vector3 topRight = drawingSurface.TransformPoint(new Vector3(.5f, .5f, .5f));
+        Vector3 dimensions = topRight - bottomLeft;
+        
         BidirectionalGraph<Vertex, Edge> graph = parametricModel.Graph;
         List<Group> groups = parametricModel.Groups;
-
-        Bounds drawingSurfaceBounds = drawingSurface.GetComponent<Renderer>().bounds;
-
-        Vector3 dimensions = drawingSurfaceBounds.extents * 2;
-        Vector3 bottomLeft = drawingSurfaceBounds.min;
-        Vector3 topRight = drawingSurfaceBounds.max;
 
         RectangleF modelBounds = parametricModel.FindBounds();
         Debug.Log("Bounds in the model coordinate system: " + modelBounds);
 
+        Quaternion savedRotation = drawingSurface.rotation;
+        drawingSurface.rotation = Quaternion.identity;
+
         foreach (Vertex vertex in graph.Vertices)
         {
-            AddComponent(drawingSurface, vertex, bottomLeft, modelBounds, dimensions, topRight, graph);
+            AddComponent(drawingSurface, vertex, modelBounds, graph);
         }
 
+        drawingSurface.rotation = savedRotation;
+        
         RefreshEdges(graph);
         
         OrderedDictionary orderedGroups = ParametricModel.OrderGroupsWithDepth(groups);
@@ -221,9 +224,13 @@ public class GHModelManager : Singleton<GHModelManager>
         //LineDrawer.Instance.Lines = lines;
     }
 
-    private GameObject AddComponent(Transform drawingSurface, Vertex vertex, Vector3 bottomLeft, RectangleF modelBounds,
-        Vector3 dimensions, Vector3 topRight, BidirectionalGraph<Vertex, Edge> graph)
+    private GameObject AddComponent(Transform drawingSurface, Vertex vertex, RectangleF modelBounds, BidirectionalGraph<Vertex, Edge> graph)
     {
+        if (drawingSurface.rotation != Quaternion.identity)
+        {
+            Debug.LogWarning("Drawing surface is rotated, this will produce unexpected results");
+        }
+        
         Component component = vertex.Chunk as Component;
         if (component != null)
         {
@@ -237,22 +244,17 @@ public class GHModelManager : Singleton<GHModelManager>
                     ? component.DefaultName
                     : component.Nickname;
             
-            /* 
-            bl.x + ((c.x - m.x) / m.w) * d.x
-            tr.z + ((c.y - m.y) / m.h) * d.z
-         
-            */
+            cube.transform.position = drawingSurface.TransformPoint(new Vector3(
+                (component.VisualBounds.X - modelBounds.X + component.VisualBounds.Width / 2f) / modelBounds.Width -.5f,
+                1f,
+                1-((component.VisualBounds.Y - modelBounds.Y + component.VisualBounds.Height / 2f) / modelBounds.Height) -.5f));
+
+            cube.transform.localScale = new Vector3( //*.7f is a slight adjustment to take ports into account
+                component.VisualBounds.Width * .7f / modelBounds.Width,
+                1f,
+                component.VisualBounds.Height * .7f / modelBounds.Height);
+
             
-            cube.transform.position = new Vector3(
-                bottomLeft.x + ((component.VisualBounds.X - modelBounds.X + component.VisualBounds.Width / 2f) /
-                modelBounds.Width) * dimensions.x,
-                drawingSurface.transform.position.y + .03f,
-                topRight.z - (component.VisualBounds.Y - modelBounds.Y + component.VisualBounds.Height / 2f) /
-                modelBounds.Height * dimensions.z);
-
-            SetScaleWithDimensions(cube.transform, component.VisualBounds.Width / modelBounds.Width,
-                component.VisualBounds.Height / modelBounds.Height);
-
             if (component is IoComponent)
             {
                 textComponent.transform.Rotate(0, 0, 90f);
@@ -446,15 +448,14 @@ public class GHModelManager : Singleton<GHModelManager>
             _parametricModel.Graph.AddVertex(new Vertex(newOutputPort));
             _parametricModel.AddEdge(instanceGuid.ToString(), newOutputPort.Guid.ToString());
         }
+        
+        Quaternion savedRotation = DrawingSurface.rotation;
+        DrawingSurface.rotation = Quaternion.identity;
 
-        Bounds drawingSurfaceBounds = DrawingSurface.GetComponent<Renderer>().bounds;
-
-        Vector3 dimensions = drawingSurfaceBounds.extents * 2;
-        Vector3 bottomLeft = drawingSurfaceBounds.min;
-        Vector3 topRight = drawingSurfaceBounds.max;
-
-        GameObject newComponent = AddComponent(DrawingSurface, newVertex, bottomLeft, _parametricModel.FindBounds(), dimensions, topRight,
+        GameObject newComponent = AddComponent(DrawingSurface, newVertex, _parametricModel.FindBounds(),
             _parametricModel.Graph);
+
+        DrawingSurface.rotation = savedRotation;
 
         return newComponent;
     }
