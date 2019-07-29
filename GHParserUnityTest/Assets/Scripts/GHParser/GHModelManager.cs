@@ -391,109 +391,84 @@ public class GHModelManager : Singleton<GHModelManager>
     {
         
     }*/
-    
-    public void AttachComponent(string componentName, string type, string value)
+
+    /// <summary>
+    /// Trying to create a new component (input type string could match multiple templates as well as a primitive).
+    /// GThis method handles the routing accordingly.
+    /// </summary>
+    /// <param name="componentName"></param>
+    /// <param name="type"></param>
+    /// <param name="value"></param>
+    public void AttachComponent(string type, string componentName = "", string value = "")
     {
+        //TODO: should check whether it could be a primitive component here and update the conditions below
+        List<IoComponentTemplate> templates = _parametricModel.ComponentTemplates.FindAll(o => o.TypeName.Equals(type));
+        
+        if (templates.Count <= 0)
+        {
+            //if(not a primitive)
+            //{
+                Debug.LogError("Did not find a template for type: " + type);
+            //}
+            //else
+            //{
+            //create primitive here
+            //}
+        }
+        else
+        {
+            if (templates.Count == 1) // && not a primitive
+            {
+                StartCoroutine(AttachTemplateComponent(templates.First().TypeGuid, componentName));
+            }
+            else
+            {
+                foreach (IoComponentTemplate template in templates) 
+                {
+                    //TODO: show a list here and let the user choose, then call AttachComponent(name,guid,value) with the selected type guid
+                    //(should include primitives that also match if any)
+                    Debug.LogWarning("Multiple components with the same type name were found in the template library, aborting for now.");
+                }   
+            }
+        }
+    }
+
+    /// <summary>
+    /// Creating a new IOComponent from a template.
+    /// </summary>
+    /// <param name="componentName"></param>
+    /// <param name="guid"></param>
+    /// <returns></returns>
+    public IEnumerator AttachTemplateComponent(Guid guid, string componentName = "")
+    {
+        yield return new WaitForEndOfFrame(); //todo: probably not necessary anymore (can also change the method's return type if so)
+
         //TODO: the user could have an object attached already or could have selected a port, should first abort those
         //if an object is already attached, could also attach this new one to the other controller
         GameObject rightControllerAlias = VRTK_DeviceFinder.GetControllerRightHand();
         Debug.Log(rightControllerAlias.name);
         
-        StartCoroutine(AttachTemplateComponent(componentName, type, value));
+        //todo: should use "value" when (1) it is not empty and (2) the value is valid for that component
+
+        IoComponentTemplate template = _parametricModel.ComponentTemplates.Find(o => o.TypeGuid.Equals(guid));
+
+        GameObject newComponent = CreateIoComponentVertex(template, componentName);
+        
+        VRTK_InteractTouch interactTouch = rightControllerAlias.GetComponent<VRTK_InteractTouch>();
+        VRTK_InteractGrab interactGrab = rightControllerAlias.GetComponent<VRTK_InteractGrab>();
+
+        newComponent.transform.position = rightControllerAlias.transform.position;
+
+        interactTouch.ForceStopTouching();
+        interactTouch.ForceTouch(newComponent);
+        interactGrab.AttemptGrab();
+        
     }
 
-    public void AttachComponent(string componentName, Guid type)
-    {
-        StartCoroutine(AttachTemplateComponent(componentName, type)); 
-    }
-    
-    private IEnumerator AttachTemplateComponent(string componentName, Guid guid)
-    {
-        //TODO: refactor that to have a single method with the actual behaviour
-        //(should probably search for the "type" parameter in the other method and then call this one)
-        //(note that this also implies handling multiple results for a type string input, whereas guid is unique)
-        yield return new WaitForEndOfFrame(); //TODO: this is most likely not necessary anymore, can also change the method's return type
-
-        List<IoComponentTemplate> templates = _parametricModel.ComponentTemplates.FindAll(o => o.TypeGuid.Equals(guid));
-        if (templates.Count <= 0)
-        {
-            Debug.LogError("Did not find a template for type: " + guid);
-        }
-        else
-        {
-            if (templates.Count == 1)
-            {
-                IoComponentTemplate template = templates.First();
-                GameObject newComponent = CreateIoComponent(template, componentName, "");
-                
-                GameObject rightControllerAlias = VRTK_DeviceFinder.GetControllerRightHand();
-                VRTK_InteractTouch interactTouch = rightControllerAlias.GetComponent<VRTK_InteractTouch>();
-                VRTK_InteractGrab interactGrab = rightControllerAlias.GetComponent<VRTK_InteractGrab>();
-
-                newComponent.transform.position = rightControllerAlias.transform.position;
-
-                interactTouch.ForceStopTouching();
-                interactTouch.ForceTouch(newComponent);
-                interactGrab.AttemptGrab();
-            }
-            else
-            {
-                foreach (IoComponentTemplate template in templates)
-                {
-                    //TODO: show a list here and let the user choose
-                    Debug.LogWarning("Multiple components with the same type name were found in the template library, picking the first one.");
-                    IoComponentTemplate firstTemplate = templates.First();
-                    GameObject newComponent = CreateIoComponent(firstTemplate, componentName, "");
-                    //TODO: attach the component here
-                }   
-            }
-        }
-    }
-
-    private IEnumerator AttachTemplateComponent(string componentName, string type, string value)
-    {
-        yield return new WaitForEndOfFrame(); //TODO: this is most likely not necessary anymore, can also change the method's return type
-
-        List<IoComponentTemplate> templates = _parametricModel.ComponentTemplates.FindAll(o => o.TypeName.Equals(type));
-        if (templates.Count <= 0)
-        {
-            Debug.LogError("Did not find a template for type: " + type);
-        }
-        else
-        {
-            if (templates.Count == 1)
-            {
-                IoComponentTemplate template = templates.First();
-                GameObject newComponent = CreateIoComponent(template, componentName, value);
-                
-                GameObject rightControllerAlias = VRTK_DeviceFinder.GetControllerRightHand();
-                VRTK_InteractTouch interactTouch = rightControllerAlias.GetComponent<VRTK_InteractTouch>();
-                VRTK_InteractGrab interactGrab = rightControllerAlias.GetComponent<VRTK_InteractGrab>();
-
-                newComponent.transform.position = rightControllerAlias.transform.position;
-
-                interactTouch.ForceStopTouching();
-                interactTouch.ForceTouch(newComponent);
-                interactGrab.AttemptGrab();
-            }
-            else
-            {
-                foreach (IoComponentTemplate template in templates)
-                {
-                    //TODO: show a list here and let the user choose
-                    Debug.LogWarning("Multiple components with the same type name were found in the template library, picking the first one.");
-                    IoComponentTemplate firstTemplate = templates.First();
-                    GameObject newComponent = CreateIoComponent(firstTemplate, componentName, value);
-                    //TODO: attach the component here
-                }   
-            }
-        }
-    }
-
-    private GameObject CreateIoComponent(IoComponentTemplate template, string componentName, string value)
+    private GameObject CreateIoComponentVertex(IoComponentTemplate template, string componentName)
     {
         Guid instanceGuid = Guid.NewGuid();
-        IoComponent ioComponent = new IoComponent(template.DefaultName, template.TypeGuid, template.TypeName, template.VisualBounds, instanceGuid, template.Nickname);
+        IoComponent ioComponent = new IoComponent(template.DefaultName, template.TypeGuid, template.TypeName, template.VisualBounds, instanceGuid, componentName);
         Vertex newVertex = new Vertex(ioComponent);
         _parametricModel.Graph.AddVertex(newVertex);
         
@@ -520,18 +495,6 @@ public class GHModelManager : Singleton<GHModelManager>
         DrawingSurface.rotation = savedRotation;
 
         return newComponent;
-    }
-
-    public void AttachComponent(string componentName, string type)
-    {
-        //TODO: should verify first that parameters are valid
-
-        /*GameObject newComponent = Instantiate(PlaceHolderComponentPrefab, DrawingSurface);
-        newComponent.GetComponentInChildren<Text>().text = componentName;*/
-
-        //TODO: actually attach this to the controller
-        
-        
     }
 
     /// <summary>
@@ -748,7 +711,7 @@ public class GHModelManager : Singleton<GHModelManager>
     {
         if (Input.GetKeyDown(KeyCode.A)) //TODO: remove this
         {
-            AttachComponent("testname", "Line", "testvalue"); 
+            AttachComponent("Line", "testname", "testvalue"); 
         }
         
         if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1))

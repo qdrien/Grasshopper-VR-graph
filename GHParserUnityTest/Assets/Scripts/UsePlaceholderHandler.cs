@@ -25,7 +25,7 @@ public class UsePlaceholderHandler : MonoBehaviour {
 		Debug.LogWarning(transform.name + " used.");
 		gameObject.SetActive(false);
 		Invoke(nameof(Activate), 2f);
-		GHModelManager.Instance.AttachComponent(GetComponentInChildren<Text>().text, new Guid(transform.name));
+		StartCoroutine(GHModelManager.Instance.AttachTemplateComponent(new Guid(transform.name), GetComponentInChildren<Text>().text));
 	}
 
 	private void Activate()

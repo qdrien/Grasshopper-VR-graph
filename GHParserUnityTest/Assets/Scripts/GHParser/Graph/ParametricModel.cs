@@ -27,9 +27,8 @@ namespace GHParser.Graph
         private Guid _documentId;
         public string GHTemplateFile = "/GH files/base.ghx";
         private string _componentTemplateFile = "";
-        private List<IoComponentTemplate> _componentTemplates;
 
-        public List<IoComponentTemplate> ComponentTemplates => _componentTemplates;
+        public List<IoComponentTemplate> ComponentTemplates { get; private set; }
 
         //QUESTION: do we need those getter/setter? can't we just have the behaviour happen within this class?
         public BidirectionalGraph<Vertex, Edge> Graph { get; set; }
@@ -130,7 +129,7 @@ namespace GHParser.Graph
                 Debug.LogError("No component templates file given, cannot load templates.");
             }
             _componentTemplateFile = templatesFile;
-            _componentTemplates = new List<IoComponentTemplate>();
+            ComponentTemplates = new List<IoComponentTemplate>();
 
             FileStream stream;
             
@@ -154,7 +153,7 @@ namespace GHParser.Graph
             foreach (IoComponentTemplate template in templates)
             {
                 Debug.Log(template);
-                _componentTemplates.Add(template);
+                ComponentTemplates.Add(template);
             }
         }
 
@@ -168,7 +167,7 @@ namespace GHParser.Graph
             foreach (Vertex vertex in Graph.Vertices)
             {
                 IoComponent component = vertex.Chunk as IoComponent;
-                if (component != null && !_componentTemplates.Any(o => o.TypeGuid.Equals(component.TypeGuid)))
+                if (component != null && !ComponentTemplates.Any(o => o.TypeGuid.Equals(component.TypeGuid)))
                 {
                     List<InputPort> inputPorts = new List<InputPort>();
                     List<OutputPort> outputPorts = new List<OutputPort>();
@@ -188,7 +187,7 @@ namespace GHParser.Graph
                     IoComponentTemplate newTemplate = new IoComponentTemplate(component.DefaultName, component.TypeGuid,
                         component.TypeName,
                         component.VisualBounds, component.Nickname, inputPorts, outputPorts);
-                    _componentTemplates.Add(newTemplate);
+                    ComponentTemplates.Add(newTemplate);
                     
                     Debug.Log("Learned a new template component: " + newTemplate);
                 }
@@ -197,7 +196,7 @@ namespace GHParser.Graph
             IFormatter formatter = new BinaryFormatter();
             Stream stream = new FileStream(Application.dataPath + "/" + _componentTemplateFile, FileMode.Create, FileAccess.Write);
 
-            formatter.Serialize(stream, _componentTemplates);
+            formatter.Serialize(stream, ComponentTemplates);
             stream.Close();
         }
 
