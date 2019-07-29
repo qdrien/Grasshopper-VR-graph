@@ -41,6 +41,11 @@ public class PortInteractUse : VRTK_InteractUse
     {
         base.OnControllerStartUseInteractableObject(e);
 
+        if (e.target.GetComponent<UsePlaceholderHandler>() != null)
+        {
+            return;
+        }
+
         bool isInputPort = e.target.transform.parent.name.Contains("Input");
         Debug.Log(e.controllerReference.hand + " controller started using with " + (isInputPort ? "input " : "output") + " port " + e.target.transform.name);
 

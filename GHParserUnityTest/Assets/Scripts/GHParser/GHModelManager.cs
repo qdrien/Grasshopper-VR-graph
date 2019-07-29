@@ -27,17 +27,22 @@ public class GHModelManager : Singleton<GHModelManager>
     public string BaseTemplateFile = "/GH files/base.ghx";
     public GameObject ComponentPrefab;
     public GameObject CurvedLinePrefab;
+    public GameObject PlaceHolderPrefab;
     public Material DefaultGroupMaterial;
     public Transform DrawingSurface;
+    public Transform Toolbar;
     public Transform GroupsContainer;
     public GameObject InputBlockPrefab;
     public GameObject InputPrefab;
+    public GameObject InputPlaceholderPrefab;
     public GameObject LinePointPrefab;
     public Transform LinesContainer;
     public GameObject OutputBlockPrefab;
     public GameObject OutputPrefab;
+    public GameObject OutputPlaceholderPrefab;
     public string RelativePath = "/GH files/test.ghx";
     public string ComponentTemplatesFile;
+    public float PlaceholderSpotLength = .2f;
 
     private void Start()
     {
@@ -45,6 +50,15 @@ public class GHModelManager : Singleton<GHModelManager>
         _parametricModel.LoadComponentTemplates(ComponentTemplatesFile);
         _parametricModel.LoadFromGrasshopper(RelativePath);
         DrawBasicGraph(DrawingSurface, _parametricModel);
+        Quaternion savedRotation = DrawingSurface.rotation;
+        DrawingSurface.rotation = Quaternion.identity;
+        for (int i = 0; i < _parametricModel.ComponentTemplates.Count; i++)
+        {
+            IoComponentTemplate template = _parametricModel.ComponentTemplates[i];
+            AddComponentToToolbar(template, i);
+        }
+
+        DrawingSurface.rotation = savedRotation;
     }
 
     private void DrawBasicGraph(Transform drawingSurface, ParametricModel parametricModel)
@@ -386,6 +400,54 @@ public class GHModelManager : Singleton<GHModelManager>
         Debug.Log(rightControllerAlias.name);
         
         StartCoroutine(AttachTemplateComponent(componentName, type, value));
+    }
+
+    public void AttachComponent(string componentName, Guid type)
+    {
+        StartCoroutine(AttachTemplateComponent(componentName, type)); 
+    }
+    
+    private IEnumerator AttachTemplateComponent(string componentName, Guid guid)
+    {
+        //TODO: refactor that to have a single method with the actual behaviour
+        //(should probably search for the "type" parameter in the other method and then call this one)
+        //(note that this also implies handling multiple results for a type string input, whereas guid is unique)
+        yield return new WaitForEndOfFrame(); //TODO: this is most likely not necessary anymore, can also change the method's return type
+
+        List<IoComponentTemplate> templates = _parametricModel.ComponentTemplates.FindAll(o => o.TypeGuid.Equals(guid));
+        if (templates.Count <= 0)
+        {
+            Debug.LogError("Did not find a template for type: " + guid);
+        }
+        else
+        {
+            if (templates.Count == 1)
+            {
+                IoComponentTemplate template = templates.First();
+                GameObject newComponent = CreateIoComponent(template, componentName, "");
+                
+                GameObject rightControllerAlias = VRTK_DeviceFinder.GetControllerRightHand();
+                VRTK_InteractTouch interactTouch = rightControllerAlias.GetComponent<VRTK_InteractTouch>();
+                VRTK_InteractGrab interactGrab = rightControllerAlias.GetComponent<VRTK_InteractGrab>();
+
+                newComponent.transform.position = rightControllerAlias.transform.position;
+
+                interactTouch.ForceStopTouching();
+                interactTouch.ForceTouch(newComponent);
+                interactGrab.AttemptGrab();
+            }
+            else
+            {
+                foreach (IoComponentTemplate template in templates)
+                {
+                    //TODO: show a list here and let the user choose
+                    Debug.LogWarning("Multiple components with the same type name were found in the template library, picking the first one.");
+                    IoComponentTemplate firstTemplate = templates.First();
+                    GameObject newComponent = CreateIoComponent(firstTemplate, componentName, "");
+                    //TODO: attach the component here
+                }   
+            }
+        }
     }
 
     private IEnumerator AttachTemplateComponent(string componentName, string type, string value)
@@ -971,5 +1033,130 @@ public class GHModelManager : Singleton<GHModelManager>
         }
 
         RefreshEdges(vertex);
+    }
+
+    public void AddComponentToToolbar(IoComponentTemplate template, int i)  //TODO: use a more generic type here to include primitives?
+    {//TODO: extract parts to methods that can also be called from AddComponent(), especially the if/elif/... part
+        if (DrawingSurface.rotation != Quaternion.identity)
+        {
+            Debug.LogWarning("Drawing surface is rotated, this will produce unexpected results");
+        }
+        
+        RectangleF modelBounds = _parametricModel.FindBounds();
+
+        GameObject cube = Instantiate(PlaceHolderPrefab, DrawingSurface, true);
+        cube.name = template.TypeGuid.ToString();
+        Text textComponent = cube.GetComponentInChildren<Text>();
+
+        textComponent.text = template.TypeName;
+
+        //TODO: extract that and call the extracted method in AddComponent() as well
+        cube.transform.localScale = new Vector3( //*.7f is a slight adjustment to take ports into account
+            template.VisualBounds.Width * .7f / modelBounds.Width,
+            1f,
+            template.VisualBounds.Height * .7f / modelBounds.Height);
+
+        cube.transform.parent = Toolbar;
+        cube.transform.localPosition = new Vector3(-.5f, 1f, 0f);
+        cube.transform.Translate(PlaceholderSpotLength/2f + i*PlaceholderSpotLength, 0f, 0f);
+
+        if (template is IoComponentTemplate)
+        {
+            textComponent.transform.Rotate(0, 0, 90f);
+            
+            GameObject inputBlock = Instantiate(InputBlockPrefab, cube.transform.Find("InputBlockSpot"), true);
+            Vector3 inputBlockExtents = inputBlock.GetComponentInChildren<Renderer>().bounds.extents;
+            inputBlock.transform.localPosition = new Vector3(-inputBlockExtents.x, 0f, 0f);
+            inputBlock.transform.localScale = Vector3.one;
+            List<InputPort> inputPorts = template.InputPorts;
+            for (int portIndex = 0; portIndex < inputPorts.Count; portIndex++)
+            {
+                InputPort port = inputPorts[portIndex];
+                GameObject input = Instantiate(InputPlaceholderPrefab, inputBlock.transform.Find("Input Spot"), true);
+                input.GetComponentInChildren<TextMesh>().text = port.DefaultName;
+                input.transform.localPosition =
+                    new Vector3(0f, 0f, 1 - (portIndex + 1f) / (inputPorts.Count + 1)); //n/n+1
+
+                Transform sphere = input.transform.Find("Sphere");
+                sphere.name = port.DefaultName;
+                input.transform.localScale = Vector3.one;
+            }
+
+            GameObject outputBlock = Instantiate(OutputBlockPrefab, cube.transform.Find("OutputBlockSpot"), true);
+            Vector3 outputBlockExtents = outputBlock.GetComponentInChildren<Renderer>().bounds.extents;
+            outputBlock.transform.localPosition = new Vector3(outputBlockExtents.x, 0f, 0f);
+            outputBlock.transform.localScale = Vector3.one;
+            List<OutputPort> outputPorts = template.OutputPorts;
+            for (int portIndex = 0; portIndex < outputPorts.Count; portIndex++)
+            {
+                OutputPort port = outputPorts[portIndex];
+                GameObject output = Instantiate(OutputPlaceholderPrefab, outputBlock.transform.Find("Output Spot"), true);
+                output.GetComponentInChildren<TextMesh>().text = port.DefaultName;
+                output.transform.localPosition =
+                    new Vector3(0f, 0f, 1 - (portIndex + 1f) / (outputPorts.Count + 1)); //n/n+1
+                output.transform.localScale = Vector3.one;
+                Transform sphere = output.transform.Find("Sphere");
+                sphere.name = port.DefaultName;
+            }
+        }
+        //"only used as input" components
+        else if (template is NumberSliderComponent || template is BooleanToggleComponent)
+        {
+            GameObject outputBlock = Instantiate(OutputBlockPrefab, cube.transform.Find("OutputBlockSpot"), true);
+            Vector3 outputBlockExtents = outputBlock.GetComponentInChildren<Renderer>().bounds.extents;
+            outputBlock.transform.localPosition = new Vector3(outputBlockExtents.x, 0f, 0f);
+            outputBlock.transform.localScale = Vector3.one;
+            
+            GameObject output = Instantiate(OutputPrefab, outputBlock.transform.Find("Output Spot"), true);
+            output.GetComponentInChildren<TextMesh>().text = "";
+            output.transform.localPosition = new Vector3(0f, 0f, .5f); //n/n+1
+            
+            Transform sphere = output.transform.Find("Sphere");
+            sphere.name = cube.name;
+            output.transform.localScale = Vector3.one;
+            sphere.transform.localScale = new Vector3(sphere.transform.localScale.x, sphere.transform.localScale.y, .5f);
+        }
+        //"only used as output" components
+        //uncomment and code the following if any of those gets used (e.g. cluster output, galapagos?)
+        /*else if (component is <class here>)
+        {
+            
+        }*/
+        //"input/output" components
+        else if (template is PanelComponent)
+        {
+            GameObject inputBlock = Instantiate(InputBlockPrefab, cube.transform.Find("InputBlockSpot"), true);
+            Vector3 inputBlockExtents = inputBlock.GetComponentInChildren<Renderer>().bounds.extents;
+            inputBlock.transform.localPosition = new Vector3(-inputBlockExtents.x, 0f, 0f);
+            inputBlock.transform.localScale = Vector3.one;
+            
+            GameObject input = Instantiate(InputPrefab, inputBlock.transform.Find("Input Spot"), true);
+            input.GetComponentInChildren<TextMesh>().text = "";
+            input.transform.localPosition = new Vector3(0f, 0f, .5f);
+
+            Transform sphere = input.transform.Find("Sphere");
+            sphere.name = cube.name;
+            input.transform.localScale = Vector3.one;
+            
+            
+            GameObject outputBlock = Instantiate(OutputBlockPrefab, cube.transform.Find("OutputBlockSpot"), true);
+            Vector3 outputBlockExtents = outputBlock.GetComponentInChildren<Renderer>().bounds.extents;
+            outputBlock.transform.localPosition = new Vector3(outputBlockExtents.x, 0f, 0f);
+            outputBlock.transform.localScale = Vector3.one;
+            
+            GameObject output = Instantiate(OutputPrefab, outputBlock.transform.Find("Output Spot"), true);
+            output.GetComponentInChildren<TextMesh>().text = "";
+            output.transform.localPosition = new Vector3(0f, 0f, .5f);
+            
+            Transform sphere2 = output.transform.Find("Sphere");
+            sphere2.name = cube.name;
+            output.transform.localScale = Vector3.one;
+        }
+
+        GameObject testCube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        testCube.transform.name = "TestCollider";
+        testCube.transform.SetParent(cube.transform);
+        testCube.transform.localScale = Vector3.one;
+        testCube.transform.localPosition = Vector3.zero;
     }
 }
