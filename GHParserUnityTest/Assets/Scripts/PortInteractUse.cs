@@ -39,7 +39,9 @@ public class PortInteractUse : VRTK_InteractUse
 
     public override void OnControllerStartUseInteractableObject(ObjectInteractEventArgs e)
     {
-        base.OnControllerStartUseInteractableObject(e);
+        base.OnControllerStartUseInteractableObject(e);//todo: do we need to call that?
+        
+        if(e.target.name.Contains("RadialMenu")) return;
 
         if (e.target.GetComponent<UsePlaceholderHandler>() != null)
         {
@@ -108,6 +110,8 @@ public class PortInteractUse : VRTK_InteractUse
     public override void OnControllerStartUnuseInteractableObject(ObjectInteractEventArgs e)
     {
         base.OnControllerStartUnuseInteractableObject(e);
+        
+        if(e.target.name.Contains("RadialMenu")) return;
         
         bool isInputPort = e.target.transform.parent.name.Contains("Input");
         Debug.Log(e.controllerReference.hand + " controller stopped using with " + (isInputPort ? "input " : "output") + " port " + e.target.transform.name);

@@ -40,6 +40,7 @@ public class GHModelManager : Singleton<GHModelManager>
     public GameObject OutputBlockPrefab;
     public GameObject OutputPrefab;
     public GameObject OutputPlaceholderPrefab;
+    public GameObject RadialMenuPrefab;
     public string RelativePath = "/GH files/test.ghx";
     public string ComponentTemplatesFile;
     public float PlaceholderSpotLength = .2f;
@@ -402,7 +403,7 @@ public class GHModelManager : Singleton<GHModelManager>
     public void AttachComponent(string type, string componentName = "", string value = "")
     {
         //TODO: should check whether it could be a primitive component here and update the conditions below
-        List<IoComponentTemplate> templates = _parametricModel.ComponentTemplates.FindAll(o => o.TypeName.Equals(type));
+        List<IoComponentTemplate> templates = _parametricModel.ComponentTemplates.FindAll(o => o.TypeName.Contains(type));
         
         if (templates.Count <= 0)
         {
@@ -423,12 +424,53 @@ public class GHModelManager : Singleton<GHModelManager>
             }
             else
             {
+                //TODO: show a list here and let the user choose, then call AttachComponent(name,guid,value) with the selected type guid
+                //(should include primitives that also match if any)
+                Debug.LogWarning("Multiple components include the given type name in the template library.");
+
+                GameObject menu = Instantiate(RadialMenuPrefab);
+                GameObject rightController = VRTK_DeviceFinder.GetControllerRightHand();
+                menu.transform.position = rightController.transform.position + rightController.transform.forward * .05f;
+                VRTK_RadialMenu radialMenu = menu.GetComponentInChildren<VRTK_RadialMenu>();
+                VRTK_RadialMenu.RadialMenuButton radialButtonTemplate = radialMenu.buttons.First();
+                List<VRTK_RadialMenu.RadialMenuButton> buttons = new List<VRTK_RadialMenu.RadialMenuButton>(templates.Count);
+
                 foreach (IoComponentTemplate template in templates) 
                 {
-                    //TODO: show a list here and let the user choose, then call AttachComponent(name,guid,value) with the selected type guid
-                    //(should include primitives that also match if any)
-                    Debug.LogWarning("Multiple components with the same type name were found in the template library, aborting for now.");
-                }   
+                    buttons.Add(radialButtonTemplate);
+                }
+
+                radialMenu.buttons = buttons;
+                radialMenu.RegenerateButtons();
+
+                Transform panel = menu.transform.Find("RadialMenu/RadialMenuUI/Panel");
+
+                int panelChildCount = panel.childCount;
+                for (int i = 0; i < panelChildCount; i++)
+                {
+                    Transform arc = panel.GetChild(i);
+                    IoComponentTemplate template = templates[i];
+                    
+                    Transform buttonIcon = arc.Find("ButtonIcon");
+                    GameObject placeHolder = Instantiate(PlaceHolderPrefab, arc);
+                    
+                    placeHolder.name = template.TypeGuid.ToString();
+                    placeHolder.GetComponentInChildren<Text>().text = template.TypeName;
+                    
+                    placeHolder.transform.parent = null;
+                    placeHolder.transform.position += placeHolder.transform.right * -.2f;
+                    placeHolder.transform.localScale = Vector3.one * .1f;
+
+                    Vector3 panelLocalScale = panel.localScale;
+                    panel.localScale = Vector3.one;
+                    placeHolder.transform.SetParent(panel, true);
+                    panel.localScale = panelLocalScale;
+                    placeHolder.transform.localRotation = Quaternion.Euler(0f,-90f,90f);
+                    
+                    //todo: would add the interaction (probably here) but does it make sense? 
+                    //that part of the code would actually be useful for text input since we could call this method
+                    //when only a few options match the given input
+                }
             }
         }
     }
@@ -712,6 +754,11 @@ public class GHModelManager : Singleton<GHModelManager>
         if (Input.GetKeyDown(KeyCode.A)) //TODO: remove this
         {
             AttachComponent("Line", "testname", "testvalue"); 
+        }
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+//            AttachComponent("YZ", "testmultipleresultsname", "testvalue");
+            AttachComponent("l", "testmultipleresultsname", "testvalue");
         }
         
         if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1))
