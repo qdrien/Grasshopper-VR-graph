@@ -325,6 +325,15 @@ public class GHModelManager : Singleton<GHModelManager>
                 sphere.name = cube.name;
                 output.transform.localScale = Vector3.one;
                 sphere.transform.localScale = new Vector3(sphere.transform.localScale.x, sphere.transform.localScale.y, .5f);
+
+                if (component is NumberSliderComponent)
+                {
+                    //todo
+                }
+                else //booleantoggle then
+                {
+                    //todo
+                }
             }
             //"only used as output" components
             //uncomment and code the following if any of those gets used (e.g. cluster output, galapagos?)
@@ -403,7 +412,7 @@ public class GHModelManager : Singleton<GHModelManager>
     public void AttachComponent(string type, string componentName = "", string value = "")
     {
         //TODO: should check whether it could be a primitive component here and update the conditions below
-        List<IoComponentTemplate> templates = _parametricModel.ComponentTemplates.FindAll(o => o.TypeName.Contains(type));
+        List<IoComponentTemplate> templates = _parametricModel.ComponentTemplates.FindAll(o => o.TypeName.ToLower().Contains(type.ToLower()));
         
         if (templates.Count <= 0)
         {
