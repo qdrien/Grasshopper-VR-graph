@@ -20,12 +20,12 @@ public class UsePlaceholderHandler : MonoBehaviour {
 		interactableObject.InteractableObjectUsed += OnComponentUsed;
 	}
 
-	private void OnComponentUsed(object sender, InteractableObjectEventArgs e)
+	private void OnComponentUsed(object sender, InteractableObjectEventArgs e) //sender is the placeholder, e.interactingobject is the controller
 	{
 		Debug.LogWarning(transform.name + " used.");
+		GHModelManager.Instance.AttachTemplateComponent(new Guid(transform.name), e.interactingObject, GetComponentInChildren<Text>().text);
 		gameObject.SetActive(false);
 		Invoke(nameof(Activate), 2f);
-		StartCoroutine(GHModelManager.Instance.AttachTemplateComponent(new Guid(transform.name), GetComponentInChildren<Text>().text));
 	}
 
 	private void Activate()

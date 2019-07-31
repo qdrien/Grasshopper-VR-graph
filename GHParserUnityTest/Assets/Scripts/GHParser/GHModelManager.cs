@@ -429,7 +429,8 @@ public class GHModelManager : Singleton<GHModelManager>
         {
             if (templates.Count == 1) // && not a primitive
             {
-                StartCoroutine(AttachTemplateComponent(templates.First().TypeGuid, componentName));
+                //todo: should check whether the right controller is free, use the left one if its not
+                StartCoroutine(AttachTemplateComponentCoroutine(templates.First().TypeGuid, VRTK_DeviceFinder.GetControllerRightHand(), componentName));
             }
             else
             {
@@ -484,20 +485,23 @@ public class GHModelManager : Singleton<GHModelManager>
         }
     }
 
+    public void AttachTemplateComponent(Guid guid, GameObject controller, string componentName = "")
+    {
+        StartCoroutine(AttachTemplateComponentCoroutine(guid, controller, componentName));
+    }
+
     /// <summary>
     /// Creating a new IOComponent from a template.
     /// </summary>
-    /// <param name="componentName"></param>
     /// <param name="guid"></param>
+    /// <param name="componentName"></param>
+    /// <param name="eInteractingObject"></param>
     /// <returns></returns>
-    public IEnumerator AttachTemplateComponent(Guid guid, string componentName = "")
+    public IEnumerator AttachTemplateComponentCoroutine(Guid guid, GameObject controller, string componentName = "")
     {
         yield return new WaitForEndOfFrame(); //todo: probably not necessary anymore (can also change the method's return type if so)
 
         //TODO: the user could have an object attached already or could have selected a port, should first abort those
-        //if an object is already attached, could also attach this new one to the other controller
-        GameObject rightControllerAlias = VRTK_DeviceFinder.GetControllerRightHand();
-        Debug.Log(rightControllerAlias.name);
         
         //todo: should use "value" when (1) it is not empty and (2) the value is valid for that component
 
@@ -505,10 +509,10 @@ public class GHModelManager : Singleton<GHModelManager>
 
         GameObject newComponent = CreateIoComponentVertex(template, componentName);
         
-        VRTK_InteractTouch interactTouch = rightControllerAlias.GetComponent<VRTK_InteractTouch>();
-        VRTK_InteractGrab interactGrab = rightControllerAlias.GetComponent<VRTK_InteractGrab>();
+        VRTK_InteractTouch interactTouch = controller.GetComponent<VRTK_InteractTouch>();
+        VRTK_InteractGrab interactGrab = controller.GetComponent<VRTK_InteractGrab>();
 
-        newComponent.transform.position = rightControllerAlias.transform.position;
+        newComponent.transform.position = controller.transform.position;
 
         interactTouch.ForceStopTouching();
         interactTouch.ForceTouch(newComponent);
