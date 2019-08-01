@@ -12,6 +12,7 @@ using GHParser.Utils;
 using GH_IO.Serialization;
 using HoloToolkit.Unity;
 using QuickGraph;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Valve.VR;
@@ -26,6 +27,7 @@ public class GHModelManager : Singleton<GHModelManager>
     private ParametricModel _parametricModel;
     public string BaseTemplateFile = "/GH files/base.ghx";
     public GameObject ComponentPrefab;
+    public GameObject BooleanTogglePrefab;
     public GameObject CurvedLinePrefab;
     public GameObject PlaceHolderPrefab;
     public Material DefaultGroupMaterial;
@@ -240,6 +242,140 @@ public class GHModelManager : Singleton<GHModelManager>
     }
 
     private GameObject AddComponent(Transform drawingSurface, Vertex vertex, RectangleF modelBounds, BidirectionalGraph<Vertex, Edge> graph)
+    {
+        if (drawingSurface.rotation != Quaternion.identity)
+        {
+            Debug.LogWarning("Drawing surface is rotated, this will produce unexpected results");
+        }
+        
+        Component component = vertex.Chunk as Component;
+        if (component != null)
+        {
+            GameObject newComponent = null;
+
+            if (component is IoComponent)
+            {
+                newComponent = Instantiate(ComponentPrefab, drawingSurface, true);
+                newComponent.name = component.Guid.ToString();
+                newComponent.AddComponent<InteractableVertex>().Vertex = vertex;
+                Text textComponent = newComponent.GetComponentInChildren<Text>();
+
+                textComponent.text =
+                    string.IsNullOrEmpty(component.Nickname)
+                        ? component.DefaultName
+                        : component.Nickname;
+                
+                newComponent.transform.position = drawingSurface.TransformPoint(new Vector3(
+                    (component.VisualBounds.X - modelBounds.X + component.VisualBounds.Width / 2f) / modelBounds.Width -.5f,
+                    1f,
+                    1-((component.VisualBounds.Y - modelBounds.Y + component.VisualBounds.Height / 2f) / modelBounds.Height) -.5f));
+
+                newComponent.transform.localScale = new Vector3( //*.7f is a slight adjustment to take ports into account
+                    component.VisualBounds.Width * .7f / modelBounds.Width,
+                    1f,
+                    component.VisualBounds.Height * .7f / modelBounds.Height);
+                
+                textComponent.transform.Rotate(0, 0, 90f);
+
+                GameObject inputBlock = Instantiate(InputBlockPrefab, newComponent.transform.Find("InputBlockSpot"), true);
+                Vector3 inputBlockExtents = inputBlock.GetComponentInChildren<Renderer>().bounds.extents;
+                inputBlock.transform.localPosition = new Vector3(-inputBlockExtents.x, 0f, 0f);
+                inputBlock.transform.localScale = Vector3.one;
+                List<Edge> inEdges = new List<Edge>(graph.InEdges(vertex));
+                for (int portIndex = 0; portIndex < inEdges.Count; portIndex++)
+                {
+                    InputPort port = inEdges[portIndex].Source.Chunk as InputPort;
+                    GameObject input = Instantiate(InputPrefab, inputBlock.transform.Find("Input Spot"), true);
+                    input.GetComponentInChildren<TextMesh>().text = port.DefaultName;
+                    input.transform.localPosition =
+                        new Vector3(0f, 0f, 1 - (portIndex + 1f) / (inEdges.Count + 1)); //n/n+1
+
+                    Transform sphere = input.transform.Find("Sphere");
+                    sphere.name = port.Guid.ToString();
+                    input.transform.localScale = Vector3.one;
+                }
+
+                GameObject outputBlock = Instantiate(OutputBlockPrefab, newComponent.transform.Find("OutputBlockSpot"), true);
+                Vector3 outputBlockExtents = outputBlock.GetComponentInChildren<Renderer>().bounds.extents;
+                outputBlock.transform.localPosition = new Vector3(outputBlockExtents.x, 0f, 0f);
+                outputBlock.transform.localScale = Vector3.one;
+                List<Edge> outEdges = new List<Edge>(graph.OutEdges(vertex));
+                for (int portIndex = 0; portIndex < outEdges.Count; portIndex++)
+                {
+                    OutputPort port = outEdges[portIndex].Target.Chunk as OutputPort;
+                    GameObject output = Instantiate(OutputPrefab, outputBlock.transform.Find("Output Spot"), true);
+                    output.GetComponentInChildren<TextMesh>().text = port.DefaultName;
+                    output.transform.localPosition =
+                        new Vector3(0f, 0f, 1 - (portIndex + 1f) / (outEdges.Count + 1)); //n/n+1
+                    output.transform.localScale = Vector3.one;
+                    Transform sphere = output.transform.Find("Sphere");
+                    sphere.name = port.Guid.ToString();
+                }
+                
+                GameObject testCube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                testCube.transform.name = "TestCollider";
+                testCube.transform.SetParent(newComponent.transform);
+                testCube.transform.localScale = Vector3.one;
+                testCube.transform.localPosition = Vector3.zero;
+            }
+            else if (component is BooleanToggleComponent)
+            {
+                newComponent = Instantiate(BooleanTogglePrefab);
+                newComponent.name = component.Guid.ToString();
+                newComponent.AddComponent<InteractableVertex>().Vertex = vertex;
+                TextMeshPro textComponent = newComponent.GetComponentInChildren<TextMeshPro>();
+                
+                textComponent.text =
+                    string.IsNullOrEmpty(component.Nickname)
+                        ? component.DefaultName
+                        : component.Nickname;
+                
+                newComponent.transform.position = drawingSurface.TransformPoint(new Vector3(
+                    (component.VisualBounds.X - modelBounds.X + component.VisualBounds.Width / 2f) / modelBounds.Width -.5f,
+                    1f,
+                    1-((component.VisualBounds.Y - modelBounds.Y + component.VisualBounds.Height / 2f) / modelBounds.Height) -.5f));
+
+                //should have
+                //x = (component.VisualBounds.Width / modelBounds.Width) * drawingSurface.xLength
+                //y = 1f
+                //z = (component.VisualBounds.Height / modelBounds.Height) * drawingSurface.zLength
+                
+                newComponent.transform.localScale = new Vector3( //*.7f is a slight adjustment to take ports into account
+                    component.VisualBounds.Width * .8f / modelBounds.Width,
+                    newComponent.transform.localScale.y,
+                    component.VisualBounds.Height * .8f / modelBounds.Height);
+                
+                GameObject outputBlock = Instantiate(OutputBlockPrefab, newComponent.transform.Find("OutputBlockSpot"), true);
+                Vector3 outputBlockExtents = outputBlock.GetComponentInChildren<Renderer>().bounds.extents;
+                outputBlock.transform.localPosition = new Vector3(outputBlockExtents.x, 0f, 0f);
+                outputBlock.transform.localScale = Vector3.one;
+                
+                GameObject output = Instantiate(OutputPrefab, outputBlock.transform.Find("Output Spot"), true);
+                output.GetComponentInChildren<TextMesh>().text = "";
+                output.transform.localPosition = new Vector3(0f, 0f, .5f); //n/n+1
+                
+                Transform sphere = output.transform.Find("Sphere");
+                sphere.name = newComponent.name;
+                output.transform.localScale = Vector3.one;
+                sphere.transform.localScale = new Vector3(sphere.transform.localScale.x, sphere.transform.localScale.y, .5f);
+
+                newComponent.transform.SetParent(drawingSurface, true);
+            }
+            else if (component is NumberSliderComponent)
+            {
+                AddComponentOld(drawingSurface, vertex, modelBounds, graph);
+            }
+            else if (component is PanelComponent)
+            {
+                AddComponentOld(drawingSurface, vertex, modelBounds, graph);   
+            }
+            
+            return newComponent;
+        }
+        return null;
+    }
+    
+    private GameObject AddComponentOld(Transform drawingSurface, Vertex vertex, RectangleF modelBounds, BidirectionalGraph<Vertex, Edge> graph)
     {
         if (drawingSurface.rotation != Quaternion.identity)
         {
@@ -888,6 +1024,8 @@ public class GHModelManager : Singleton<GHModelManager>
     private void AddLine(Guid startGuid, Guid endGuid, Material lineMaterial,
         Easings.Functions easingType = Easings.Functions.Linear)
     {
+        Debug.Log("Adding line from " + startGuid + " to " + endGuid);
+        
         Transform startObject = FindDescendant(DrawingSurface, startGuid.ToString());
         Transform endObject = FindDescendant(DrawingSurface, endGuid.ToString());
         Vector3 start = startObject.position;

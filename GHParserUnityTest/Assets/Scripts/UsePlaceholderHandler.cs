@@ -20,7 +20,7 @@ public class UsePlaceholderHandler : MonoBehaviour {
 		interactableObject.InteractableObjectUsed += OnComponentUsed;
 	}
 
-	private void OnComponentUsed(object sender, InteractableObjectEventArgs e) //sender is the placeholder, e.interactingobject is the controller
+	private void OnComponentUsed(object sender, InteractableObjectEventArgs e)
 	{
 		Debug.LogWarning(transform.name + " used.");
 		GHModelManager.Instance.AttachTemplateComponent(new Guid(transform.name), e.interactingObject, GetComponentInChildren<Text>().text);

@@ -3570,7 +3570,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4597716173881508, guid: e43ecbed6be7bf6438c65dedc3426f4b, type: 2}
       propertyPath: m_RootOrder
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 114135483739203424, guid: e43ecbed6be7bf6438c65dedc3426f4b,
         type: 2}
@@ -3631,6 +3631,12 @@ Prefab:
       propertyPath: RadialMenuPrefab
       value: 
       objectReference: {fileID: 1142391634242364, guid: 86cc0a3fdf894184c9ea612683036e25,
+        type: 2}
+    - target: {fileID: 114135483739203424, guid: e43ecbed6be7bf6438c65dedc3426f4b,
+        type: 2}
+      propertyPath: BooleanTogglePrefab
+      value: 
+      objectReference: {fileID: 1755698450338132, guid: bd82708dbf103254184a33fc0c829d57,
         type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: e43ecbed6be7bf6438c65dedc3426f4b, type: 2}
@@ -4751,7 +4757,7 @@ Transform:
   - {fileID: 545994861}
   - {fileID: 37225368}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1408711848
 GameObject:

@@ -6,6 +6,7 @@
             <item>add component</item>
             <item>create</item>
             <item>spawn</item>
+			<item>attach</item>
         </one-of>
     </rule>
     <rule id="Basic_components">
