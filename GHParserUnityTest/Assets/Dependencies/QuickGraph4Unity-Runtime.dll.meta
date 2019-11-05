@@ -1,7 +1,5 @@
 fileFormatVersion: 2
 guid: 6dfe5c1223c58864d8d9bc6696005d03
-timeCreated: 1541670875
-licenseType: Free
 PluginImporter:
   externalObjects: {}
   serializedVersion: 2
@@ -37,7 +35,7 @@ PluginImporter:
   - first:
       Any: 
     second:
-      enabled: 0
+      enabled: 1
       settings: {}
   - first:
       Editor: Editor

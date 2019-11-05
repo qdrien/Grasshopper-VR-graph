@@ -18,6 +18,7 @@ using Valve.VR;
 using VRTK;
 using Color = UnityEngine.Color;
 using Component = GHParser.GHElements.Component;
+using Rhino;
 
 //TODO: Move drawing parts to other classes (use component classes)
 
@@ -60,6 +61,8 @@ public class GHModelManager : Singleton<GHModelManager>
         }
 
         DrawingSurface.rotation = savedRotation;
+        var ghWatcher = new GameObject("Grasshopper Geometry");
+        ghWatcher.AddComponent<GrasshopperInUnity>();
     }
 
     private void DrawBasicGraph(Transform drawingSurface, ParametricModel parametricModel)
@@ -70,9 +73,12 @@ public class GHModelManager : Singleton<GHModelManager>
         
         BidirectionalGraph<Vertex, Edge> graph = parametricModel.Graph;
         List<Group> groups = parametricModel.Groups;
+        
+        parametricModel.AddMeshScripts();
 
         RectangleF modelBounds = parametricModel.FindBounds();
         Debug.Log("Bounds in the model coordinate system: " + modelBounds);
+
 
         Quaternion savedRotation = drawingSurface.rotation;
         drawingSurface.rotation = Quaternion.identity;
@@ -523,13 +529,14 @@ public class GHModelManager : Singleton<GHModelManager>
     private GameObject CreateIoComponentVertex(IoComponentTemplate template, string componentName)
     {
         Guid instanceGuid = Guid.NewGuid();
-        IoComponent ioComponent = new IoComponent(template.DefaultName, template.TypeGuid, template.TypeName, template.VisualBounds, instanceGuid, componentName);
+        IoComponent ioComponent = new IoComponent(template.DefaultName, template.TypeGuid, template.TypeName, template.VisualBounds, instanceGuid, componentName, template.ScriptSource, template.ComponentType, template.InputId, template.OutputId);
         Vertex newVertex = new Vertex(ioComponent);
         _parametricModel.Graph.AddVertex(newVertex);
         
         foreach (InputPort inputPort in template.InputPorts)
         {
             InputPort newInputPort = new InputPort(Guid.NewGuid(), inputPort.Nickname, inputPort.DefaultName, inputPort.VisualBounds);
+            newInputPort.TypeHintID = inputPort.TypeHintID;
             _parametricModel.Graph.AddVertex(new Vertex(newInputPort));
             _parametricModel.AddEdge(newInputPort.Guid.ToString(), instanceGuid.ToString());
         }
@@ -792,7 +799,7 @@ public class GHModelManager : Singleton<GHModelManager>
 
             if (Input.GetMouseButtonDown(0)) //left click
             {
-                _parametricModel.SaveToGrasshopper("/GH files/test-simplified-copy.ghx");
+                _parametricModel.SaveToGrasshopper("/GH files/test-copy.ghx");
             }
             else //right click
             {

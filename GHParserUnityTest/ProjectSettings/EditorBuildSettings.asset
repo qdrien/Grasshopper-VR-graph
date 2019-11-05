@@ -4,4 +4,8 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/vr-vrtk.unity
+    guid: 897bcca3b7f12064d81f1bc5f5188384
+  m_configObjects: {}

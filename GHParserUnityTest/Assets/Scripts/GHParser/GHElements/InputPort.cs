@@ -9,6 +9,14 @@ namespace GHParser.GHElements
     {
         [NonSerialized]
         private GH_Chunk _persistentData;
+        [NonSerialized]
+        private Guid _typeHintID = Guid.Empty;
+
+        public Guid TypeHintID
+        {
+            get { return _typeHintID; }
+            set { _typeHintID = value; }
+        }
 
         public InputPort(Guid guid, string nickname, string defaultName, RectangleF visualBounds) :
             base(guid, nickname, defaultName, visualBounds)

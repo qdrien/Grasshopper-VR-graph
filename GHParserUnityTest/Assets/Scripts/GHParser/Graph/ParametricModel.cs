@@ -17,6 +17,7 @@ using QuickGraph.Algorithms;
 using UnityEngine;
 using Component = GHParser.GHElements.Component;
 using Debug = UnityEngine.Debug;
+using Rhino;
 
 namespace GHParser.Graph
 {
@@ -34,6 +35,7 @@ namespace GHParser.Graph
         public BidirectionalGraph<Vertex, Edge> Graph { get; set; }
 
         public List<Group> Groups { get; set; }
+        //public List<Vertex> MeshPorts { get; set; }
 
         public void SaveToGrasshopper(string relativePath)
         {
@@ -41,7 +43,7 @@ namespace GHParser.Graph
 
             //Create base archive and set "metadata"
             GH_Archive archive = new GH_Archive();
-            archive.ReadFromFile(Application.dataPath + GHTemplateFile);
+            archive.ReadFromFile(Application.streamingAssetsPath + GHTemplateFile);
             GH_Chunk root = archive.GetRootNode;
             GH_Chunk definition = root.FindChunk("Definition") as GH_Chunk;
             GH_Chunk header = definition.FindChunk("DocumentHeader") as GH_Chunk;
@@ -97,7 +99,7 @@ namespace GHParser.Graph
             definitionObjects.RemoveItem("ObjectCount");
             definitionObjects.SetInt32("ObjectCount", currentObjectIndex);
 
-            archive.WriteToFile(Application.dataPath + relativePath, true, false);
+            archive.WriteToFile(Application.streamingAssetsPath + relativePath, true, false);
             
             Debug.Log("Saved to file " + relativePath);
         }
@@ -106,17 +108,30 @@ namespace GHParser.Graph
         {
             try
             {
-                bool success = ReadGHFile(Application.dataPath + relativePath);
+                bool success = ReadGHFile(Application.streamingAssetsPath + relativePath);
                 if (!success)
                 {
                     Debug.LogError("Failed to read the given file.");
                 }
 
                 LearnComponentTemplates();
+                /*foreach (Vertex vertex in Graph.TopologicalSort())
+                {
+                    OutputPort port = vertex.Chunk as OutputPort;
+                    if (port != null)
+                    {
+                        if (port.DefaultName.Equals("Mesh"))
+                        {
+                            Debug.LogWarning("mesh here: " + port.Guid);
+                        }
+                    }
+                }*/
             }
             catch (FileNotFoundException e)
             {
                 Debug.LogError("Given file not found. (" + relativePath + ")");
+                Debug.LogError("Should have tried: " + Directory.GetCurrentDirectory() + relativePath);
+                Debug.LogError("Also: " + Application.streamingAssetsPath + relativePath);
                 Console.WriteLine(e);
                 throw;
             }
@@ -133,15 +148,15 @@ namespace GHParser.Graph
 
             FileStream stream;
             
-            if (!File.Exists(Application.dataPath + "/" + _componentTemplateFile))
+            if (!File.Exists(Application.streamingAssetsPath + "/" + _componentTemplateFile))
             {
-                stream = File.Create(Application.dataPath + "/" + _componentTemplateFile);
+                stream = File.Create(Application.streamingAssetsPath + "/" + _componentTemplateFile);
                 stream.Close();
                 return;
             }
 
             IFormatter formatter = new BinaryFormatter();
-            stream = new FileStream(Application.dataPath + "/" + _componentTemplateFile, FileMode.Open, FileAccess.Read);
+            stream = new FileStream(Application.streamingAssetsPath + "/" + _componentTemplateFile, FileMode.Open, FileAccess.Read);
             if (stream.Length <= 0)
             {
                 stream.Close();
@@ -194,7 +209,7 @@ namespace GHParser.Graph
             }
             
             IFormatter formatter = new BinaryFormatter();
-            Stream stream = new FileStream(Application.dataPath + "/" + _componentTemplateFile, FileMode.Create, FileAccess.Write);
+            Stream stream = new FileStream(Application.streamingAssetsPath + "/" + _componentTemplateFile, FileMode.Create, FileAccess.Write);
 
             formatter.Serialize(stream, ComponentTemplates);
             stream.Close();
@@ -304,7 +319,13 @@ namespace GHParser.Graph
                 /*========== IO Component ==========*/
                 if (container.ChunkExists("param_input", 0) || container.ChunkExists("param_output", 0))
                 {
-                    new IoComponent(obj, vertices, edges);
+                    new IoComponent(obj, vertices, edges, IoComponent.IoComponentType.Type1);
+                }
+                /*========== Parameter Component ==========*/
+                else if (container.ChunkExists("ParameterData"))
+                {
+                    Debug.LogWarning("ParameterData");
+                    new IoComponent(obj, vertices, edges, IoComponent.IoComponentType.Type2);
                 }
                 /*========== Primitive Component ==========*/
                 else
@@ -344,15 +365,18 @@ namespace GHParser.Graph
                     {
                         primitiveComponent.DefaultName = nextInput.DefaultNameToGive;
                     }
-
-                    PrimitiveComponent nextPrimitive = nextVertex.Chunk as PrimitiveComponent;
-                    if (nextPrimitive != null)
-                    {
-                        primitiveComponent.DefaultName = nextPrimitive.DefaultName;
-                    }
                     else
                     {
-                        Debug.LogError("PROBLEM: next chunk is not an input port or a primitive");
+                        PrimitiveComponent nextPrimitive = nextVertex.Chunk as PrimitiveComponent;
+                        if (nextPrimitive != null)
+                        {
+                            primitiveComponent.DefaultName = nextPrimitive.DefaultName;
+                        }
+                        else
+                        {
+                            Debug.LogError("PROBLEM: next chunk " + nextVertex.Chunk.Guid + " that follows " + vertex.Chunk.Guid + " is neither an input port nor a primitive");
+                            Debug.LogError(nextVertex.Chunk.GetType());
+                        }
                     }
                 }
             }
@@ -677,5 +701,124 @@ namespace GHParser.Graph
         {
             Graph.RemoveVertex(vertex);
         }
+
+        public void AddMeshScripts()
+        {
+            List<Vertex> meshPorts = new List<Vertex>();
+            
+            foreach (Vertex vertex in Graph.Vertices)
+            {
+                OutputPort port = vertex.Chunk as OutputPort;
+                if (port != null && port.DefaultName.Equals("Mesh"))
+                {
+                    meshPorts.Add(vertex);
+                    Debug.LogWarning("mesh here: " + port.Guid);
+                }
+            }
+
+            bool alreadyStreaming = false;
+            float maxX = float.NegativeInfinity;
+            Vertex rightmostMesh = null;
+            
+            foreach (Vertex vertex in meshPorts)
+            {
+                foreach (Edge outEdge in Graph.OutEdges(vertex))
+                {
+                    Component component = outEdge.Target.Chunk as Component;
+                    if (component != null && component.TypeGuid.Equals(GHConstants.Script))
+                    {
+                        Debug.Log("There is already a script linked to port " + vertex.Chunk.Guid);
+                        
+                        if (alreadyStreaming)
+                        {
+                            Debug.LogError("Too many scripts.");
+                        }
+
+                        alreadyStreaming = true;
+                        break;
+                    }
+                }
+
+                if (!alreadyStreaming)
+                {
+                    OutputPort outputPort = vertex.Chunk as OutputPort;
+                    if (outputPort.VisualBounds.X > maxX)
+                    {
+                        maxX = outputPort.VisualBounds.X;
+                        rightmostMesh = vertex;
+                    }
+                }
+            }
+
+            if (!alreadyStreaming)
+            {
+                                    
+                Guid instanceGuid = Guid.NewGuid();
+                
+                Vertex rightMostMeshComponentVertex = Graph.InEdge(rightmostMesh, 0).Source;
+
+                Component rightMostMeshComponent = rightMostMeshComponentVertex.Chunk as Component;
+                string streamingScript = "using(var args = new Rhino.Runtime.NamedParametersEventArgs())\n" +
+                                         "{\n" +
+                                         "args.Set(\"mesh\", mesh);\n" +
+                                        "Rhino.Runtime.HostUtils.ExecuteNamedCallback(\"Unity:FromGrasshopper\", args);\n" +
+                                        "}";
+                IoComponent ioComponent = new IoComponent("C# Script", GHConstants.Script, "C# Script", new RectangleF(rightMostMeshComponent.VisualBounds.X + rightMostMeshComponent.VisualBounds.Width + 50,rightMostMeshComponent.VisualBounds.Y,84,44), instanceGuid, "MeshSteaming", streamingScript, IoComponent.IoComponentType.Type2, new Guid("84fa917c-1ed8-4db3-8be1-7bdc4a6495a2"), Guid.Empty);
+                Vertex newVertex = new Vertex(ioComponent);
+                Graph.AddVertex(newVertex);
+
+                Guid inputGuid = Guid.NewGuid();
+                InputPort inputPort = new InputPort(inputGuid, "mesh", "", new RectangleF(rightMostMeshComponent.VisualBounds.X + 2,rightMostMeshComponent.VisualBounds.Y + 2,33,27));
+                inputPort.TypeHintID = new Guid("794a1f9d-21d5-4379-b987-9e8bbf433912");
+                Graph.AddVertex(new Vertex(inputPort));
+                AddEdge(inputGuid.ToString(), instanceGuid.ToString());
+                AddEdge(rightmostMesh.Chunk.Guid.ToString(), inputGuid.ToString());
+
+                string tmpPath = "/GH files/test-copy.ghx";
+                SaveToGrasshopper(tmpPath);
+                //todo: now start grasshopper and open that file
+                
+                string absolutePath = Application.streamingAssetsPath + tmpPath;
+//                Debug.Log(absolutePath);
+//                Debug.Log(absolutePath.Replace("/", "\\\\"));
+                string rhinoCommand = "_Open \""+ absolutePath.Replace("/", "\\\\") +"\"";
+                Debug.Log("Opening the saved file in Rhino.");
+                RhinoInside.Launch();
+                RhinoApp.RunScript(rhinoCommand, false);
+            }
+        }
+        
+        /*private GameObject AddMeshScript(IoComponentTemplate template, string componentName)
+        {
+            Guid instanceGuid = Guid.NewGuid();
+            IoComponent ioComponent = new IoComponent(template.DefaultName, template.TypeGuid, template.TypeName, template.VisualBounds, instanceGuid, componentName, template.ScriptSource, template.ComponentType, template.InputId, template.OutputId);
+            Vertex newVertex = new Vertex(ioComponent);
+            _parametricModel.Graph.AddVertex(newVertex);
+        
+            foreach (InputPort inputPort in template.InputPorts)
+            {
+                InputPort newInputPort = new InputPort(Guid.NewGuid(), inputPort.Nickname, inputPort.DefaultName, inputPort.VisualBounds);
+                newInputPort.TypeHintID = inputPort.TypeHintID;
+                _parametricModel.Graph.AddVertex(new Vertex(newInputPort));
+                _parametricModel.AddEdge(newInputPort.Guid.ToString(), instanceGuid.ToString());
+            }
+        
+            foreach (OutputPort outputPort in template.OutputPorts)
+            {
+                OutputPort newOutputPort = new OutputPort(Guid.NewGuid(), outputPort.Nickname, outputPort.DefaultName, outputPort.VisualBounds);
+                _parametricModel.Graph.AddVertex(new Vertex(newOutputPort));
+                _parametricModel.AddEdge(instanceGuid.ToString(), newOutputPort.Guid.ToString());
+            }
+        
+            Quaternion savedRotation = DrawingSurface.rotation;
+            DrawingSurface.rotation = Quaternion.identity;
+
+            GameObject newComponent = AddComponent(DrawingSurface, newVertex, _parametricModel.FindBounds(),
+                _parametricModel.Graph);
+
+            DrawingSurface.rotation = savedRotation;
+
+            return newComponent;
+        }*/
     }
 }

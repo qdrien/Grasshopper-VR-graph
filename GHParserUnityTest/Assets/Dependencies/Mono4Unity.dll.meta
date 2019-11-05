@@ -1,7 +1,5 @@
 fileFormatVersion: 2
 guid: 19b1b952e76ef9a4a91602d67227e4d8
-timeCreated: 1548690353
-licenseType: Free
 PluginImporter:
   externalObjects: {}
   serializedVersion: 2
@@ -37,7 +35,7 @@ PluginImporter:
   - first:
       Any: 
     second:
-      enabled: 0
+      enabled: 1
       settings: {}
   - first:
       Editor: Editor
@@ -92,7 +90,8 @@ PluginImporter:
       Standalone: OSXUniversal
     second:
       enabled: 1
-      settings: {}
+      settings:
+        CPU: AnyCPU
   - first:
       Standalone: Win
     second:

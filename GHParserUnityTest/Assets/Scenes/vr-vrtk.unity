@@ -3596,7 +3596,7 @@ Prefab:
     - target: {fileID: 114135483739203424, guid: e43ecbed6be7bf6438c65dedc3426f4b,
         type: 2}
       propertyPath: RelativePath
-      value: /GH files/test-simplified.ghx
+      value: /GH files/simple-cube-v2-withoutscript.ghx
       objectReference: {fileID: 0}
     - target: {fileID: 114135483739203424, guid: e43ecbed6be7bf6438c65dedc3426f4b,
         type: 2}
@@ -3632,6 +3632,11 @@ Prefab:
       value: 
       objectReference: {fileID: 1142391634242364, guid: 86cc0a3fdf894184c9ea612683036e25,
         type: 2}
+    - target: {fileID: 114135483739203424, guid: e43ecbed6be7bf6438c65dedc3426f4b,
+        type: 2}
+      propertyPath: BaseTemplateFile
+      value: /GH files/base.ghx
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: e43ecbed6be7bf6438c65dedc3426f4b, type: 2}
   m_IsPrefabParent: 0
@@ -5692,7 +5697,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c966a09ef07dada438ee42e5eb610999, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  relativeGrammarFilePath: /StreamingAssets/grammar.xml
+  relativeGrammarFilePath: /grammar.xml
 --- !u!4 &1687816060
 Transform:
   m_ObjectHideFlags: 0

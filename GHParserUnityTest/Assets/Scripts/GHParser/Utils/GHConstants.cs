@@ -21,6 +21,7 @@ namespace GHParser.Utils
         public static Guid BooleanToggle = new Guid("2e78987b-9dfb-42a2-8b76-3923ac8bd91a");
         public static Guid NumberSlider = new Guid("57da07bd-ecab-415d-9d86-af36d7073abc");
         public static Guid Cluster = new Guid("f31d8d7a-7536-4ac8-9c96-fde6ecda4d0a");
+        public static Guid Script = new Guid("a9a8ebd2-fff5-4c44-a8f5-739736d129ba");
 
         public static bool IsDefaultColor(Color color)
         {

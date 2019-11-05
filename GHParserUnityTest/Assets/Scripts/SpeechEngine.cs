@@ -10,7 +10,7 @@ public class SpeechEngine : MonoBehaviour {
 
 	private bool _isAwaitingPanelText;
 	void Start() {
-		grammarRecognizer = new GrammarRecognizer(Application.dataPath + relativeGrammarFilePath);
+		grammarRecognizer = new GrammarRecognizer(Application.streamingAssetsPath + relativeGrammarFilePath);
 		grammarRecognizer.OnPhraseRecognized += Grammar_OnPhraseRecognized;
 		grammarRecognizer.Start();
 		Debug.Log("Recognition started.");
