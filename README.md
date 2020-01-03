@@ -1,4 +1,4 @@
-# eNTERFACE-graph-architecture
+# Grasshopper-VR-graph
 
 Version of Unity used: 2018.1.9f2
 
