@@ -2,7 +2,9 @@
 
 Version of Unity used: 2018.1.9f2
 
-Goals:    
+Continued work on an eNTERFACE'19 project (state of the project at the end of that workshop: [eNTERFACE-end]).
+
+Workshop goals:    
 - Bring GH graphs into VR (e.g. table metaphor)
   - What is the optimal size/height/slope of the table?
   - What about the font?
@@ -19,3 +21,5 @@ Goals:
   - Add/remove/"resize" group?
   - Modify parameter values (toggle, slider, panel)
 - For controller-based interaction, should try with different controller models (e.g. something like a stick would be easier to handle for touching/grabbing things)
+
+[eNTERFACE-end]:https://github.com/qdrien/Grasshopper-VR-graph/releases/tag/eNTERFACE-end
