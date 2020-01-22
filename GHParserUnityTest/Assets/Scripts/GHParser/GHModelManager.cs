@@ -45,6 +45,7 @@ public class GHModelManager : Singleton<GHModelManager>
     public string RelativePath = "/GH files/test.ghx";
     public string ComponentTemplatesFile;
     public float PlaceholderSpotLength = .2f;
+    public bool StreamingEnabled;
 
     private void Start()
     {
@@ -73,8 +74,11 @@ public class GHModelManager : Singleton<GHModelManager>
         
         BidirectionalGraph<Vertex, Edge> graph = parametricModel.Graph;
         List<Group> groups = parametricModel.Groups;
-        
-        parametricModel.AddMeshScripts();
+
+        if (StreamingEnabled)
+        {
+            parametricModel.AddMeshScripts();            
+        }
 
         RectangleF modelBounds = parametricModel.FindBounds();
         Debug.Log("Bounds in the model coordinate system: " + modelBounds);

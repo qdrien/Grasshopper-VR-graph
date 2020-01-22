@@ -273,6 +273,11 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 0353ae5ad4216b84cbae5791e39f712f, type: 2}
   m_IsPrefabParent: 0
+--- !u!4 &580564464 stripped
+Transform:
+  m_PrefabParentObject: {fileID: 4701187326484346, guid: 0353ae5ad4216b84cbae5791e39f712f,
+    type: 2}
+  m_PrefabInternal: {fileID: 580564463}
 --- !u!4 &581261077 stripped
 Transform:
   m_PrefabParentObject: {fileID: 4780841773368606, guid: 0353ae5ad4216b84cbae5791e39f712f,
@@ -379,6 +384,45 @@ Prefab:
       propertyPath: GroupsContainer
       value: 
       objectReference: {fileID: 627117043}
+    - target: {fileID: 114135483739203424, guid: e43ecbed6be7bf6438c65dedc3426f4b,
+        type: 2}
+      propertyPath: PlaceHolderPrefab
+      value: 
+      objectReference: {fileID: 1343235183160136, guid: b6cf7b5b7ca1fd54ead354bfbc4fcea2,
+        type: 2}
+    - target: {fileID: 114135483739203424, guid: e43ecbed6be7bf6438c65dedc3426f4b,
+        type: 2}
+      propertyPath: Toolbar
+      value: 
+      objectReference: {fileID: 580564464}
+    - target: {fileID: 114135483739203424, guid: e43ecbed6be7bf6438c65dedc3426f4b,
+        type: 2}
+      propertyPath: InputPlaceholderPrefab
+      value: 
+      objectReference: {fileID: 1045799716265910, guid: b0f16d07096674247ac76e3eb31775c7,
+        type: 2}
+    - target: {fileID: 114135483739203424, guid: e43ecbed6be7bf6438c65dedc3426f4b,
+        type: 2}
+      propertyPath: OutputPlaceholderPrefab
+      value: 
+      objectReference: {fileID: 1274864308530134, guid: ef4bc9f8c496cb04fb3997837b1d6240,
+        type: 2}
+    - target: {fileID: 114135483739203424, guid: e43ecbed6be7bf6438c65dedc3426f4b,
+        type: 2}
+      propertyPath: RadialMenuPrefab
+      value: 
+      objectReference: {fileID: 1142391634242364, guid: 86cc0a3fdf894184c9ea612683036e25,
+        type: 2}
+    - target: {fileID: 114135483739203424, guid: e43ecbed6be7bf6438c65dedc3426f4b,
+        type: 2}
+      propertyPath: ComponentTemplatesFile
+      value: component-templates.ct
+      objectReference: {fileID: 0}
+    - target: {fileID: 114135483739203424, guid: e43ecbed6be7bf6438c65dedc3426f4b,
+        type: 2}
+      propertyPath: RelativePath
+      value: /GH files/test-simplified.ghx
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: e43ecbed6be7bf6438c65dedc3426f4b, type: 2}
   m_IsPrefabParent: 0
