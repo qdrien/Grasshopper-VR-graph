@@ -22,6 +22,7 @@ Workshop goals:
   - Modify parameter values (toggle, slider, panel)
 - For controller-based interaction, should try with different controller models (e.g. something like a stick would be easier to handle for touching/grabbing things)
 
-[eNTERFACE-end]:https://github.com/qdrien/Grasshopper-VR-graph/releases/tag/eNTERFACE-end
+Available under the [MIT license].
 
-Available under the [MIT license]:https://github.com/qdrien/Grasshopper-VR-graph/blob/master/LICENSE.
+[eNTERFACE-end]:https://github.com/qdrien/Grasshopper-VR-graph/releases/tag/eNTERFACE-end
+[MIT license]:https://github.com/qdrien/Grasshopper-VR-graph/blob/master/LICENSE
